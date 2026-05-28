@@ -1,0 +1,15 @@
+---
+description: architecture rule
+alwaysApply: true
+---
+
+# Architecture
+
+技術構成:
+- Frontend: Next.js 16 + TypeScript + Tailwind CSS + shadcn/ui
+- BFF: Next.js Route Handler
+- Backend: Laravel 13 API
+- DB: MySQL 8
+
+ブラウザからLaravel APIを直接呼ばない。
+Next.js BFFを経由すること。

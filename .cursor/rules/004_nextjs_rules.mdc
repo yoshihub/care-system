@@ -1,0 +1,13 @@
+---
+description: nextjs rule
+alwaysApply: true
+---
+
+# Next.js Rules
+
+- `frontend/app` 配下を使用する
+- `frontend/src/app` は使用しない
+- Route Handlerは `frontend/app/api/**/route.ts`
+- shadcn/uiを優先する
+- Laravel API直呼びは禁止
+- BFF fetch helperを使う

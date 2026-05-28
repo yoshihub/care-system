@@ -1,0 +1,14 @@
+---
+description: laravel rule
+alwaysApply: true
+---
+
+# Laravel Rules
+
+- Laravel 13 APIとして実装する
+- APIは `/api/*`
+- Controllerは `app/Http/Controllers/Api`
+- Requestは `app/Http/Requests`
+- 業務ロジックは必要に応じて `app/Services`
+- DB構造は `docs/specs/04_database_spec.md` に従う
+- 標準仕様書の全項目を勝手にDB化しない

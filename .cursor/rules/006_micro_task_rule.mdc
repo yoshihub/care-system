@@ -1,0 +1,17 @@
+---
+description: micro task rule
+alwaysApply: true
+---
+
+# Micro Task Rule
+
+Cursorは `docs/tasks_micro/` を1つずつ実装する。
+
+実装後、以下を報告する。
+- 変更ファイル一覧
+- 変更理由
+- 対応標準仕様ID
+- 実装範囲
+- 未実装範囲
+- 動作確認方法
+- verificationチェック結果
