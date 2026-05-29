@@ -15,11 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // 介護保険デモ用の初期データ (住民異動イベント / 被保険者 / 証発行 / 再交付申請)。
+        $this->call(DemoSeeder::class);
     }
 }
