@@ -1,29 +1,31 @@
 import { NextResponse } from "next/server";
 
+import { BackendApiError, backendFetch } from "@/lib/backend";
+
 export const runtime = "nodejs";
 
+/**
+ * 疎通確認用の BFF ルート。
+ * 共通ヘルパー経由で Laravel /api/health を呼び、その結果をラップして返す。
+ */
 export async function GET() {
-  const backendUrl = process.env.BACKEND_INTERNAL_URL ?? "http://nginx";
+  try {
+    const backend = await backendFetch("/api/health");
 
-  const response = await fetch(`${backendUrl}/api/health`, {
-    cache: "no-store",
-  });
+    return NextResponse.json({
+      status: "ok",
+      via: "Next.js BFF",
+      backend,
+    });
+  } catch (error) {
+    const status = error instanceof BackendApiError ? error.status || 502 : 500;
 
-  if (!response.ok) {
     return NextResponse.json(
       {
         status: "error",
         message: "Laravel API request failed",
       },
-      { status: 500 }
+      { status }
     );
   }
-
-  const backend = await response.json();
-
-  return NextResponse.json({
-    status: "ok",
-    via: "Next.js BFF",
-    backend,
-  });
 }
