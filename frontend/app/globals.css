@@ -1,26 +1,100 @@
 @import "tailwindcss";
 
+/*
+ * 配色テーマ: 白〜ごく薄い緑を基調に、アクセントは落ち着いた緑。
+ * 文字は見やすさ重視で黒。角丸はやや大きめ、影は控えめ（各コンポーネント側）。
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --radius: 0.75rem;
+
+  /* ベース: ごく薄い緑がかった背景 / 黒文字 */
+  --background: #f4f9f4;
+  --foreground: #000000;
+
+  /* カード・ポップオーバーは白 */
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --popover: #ffffff;
+  --popover-foreground: #000000;
+
+  /* プライマリ: 落ち着いた中間トーンの緑 */
+  --primary: #4a9d5b;
+  --primary-foreground: #ffffff;
+
+  /* セカンダリ・補助: 薄緑 */
+  --secondary: #e6f2e6;
+  --secondary-foreground: #000000;
+  --muted: #eef5ee;
+  --muted-foreground: #4b5563;
+  --accent: #d7eed9;
+  --accent-foreground: #14532d;
+
+  /* 業務エラー用の赤 */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+
+  /* 境界・入力・フォーカスリング */
+  --border: #d8e6d8;
+  --input: #d8e6d8;
+  --ring: #4a9d5b;
+
+  /* サイドバー */
+  --sidebar: #eef6ee;
+  --sidebar-foreground: #000000;
+  --sidebar-primary: #4a9d5b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #d7eed9;
+  --sidebar-accent-foreground: #14532d;
+  --sidebar-border: #d8e6d8;
+  --sidebar-ring: #4a9d5b;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--border);
   }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+  }
 }
