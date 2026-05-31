@@ -13,7 +13,7 @@
 | SCR-07 | 再交付申請 | 0230295, 0230298 |
 
 ## 共通画面ルール
-- 画面右上または下部に「対応業務」「機能ID」「帳票ID」を表示する
+- 画面右上または下部に「対応業務」を表示する（機能ID・帳票IDは表示しない）
 - shadcn/uiのTable, Card, Button, Badge, Dialog, Formを利用する
 - 業務エラーは赤色のAlertで表示する
 - pending/processed/errorなどの状態はBadgeで表示する
