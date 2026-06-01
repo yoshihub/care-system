@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import {
   Card,
@@ -15,9 +16,9 @@ import { QUALIFICATION_NAV_ITEMS } from "@/components/layout/nav-items";
 export default function QualificationDashboardPage() {
   return (
     <div className="mx-auto w-full max-w-4xl">
-      <header className="mb-6">
-        <h1 className="text-xl font-bold">被保険者資格</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
+      <header className="mb-8 border-l-4 border-primary pl-4">
+        <h1 className="text-2xl font-bold tracking-tight">被保険者資格</h1>
+        <p className="mt-2 text-sm text-muted-foreground">
           業務メニューを選択してください
         </p>
       </header>
@@ -26,12 +27,21 @@ export default function QualificationDashboardPage() {
         {QUALIFICATION_NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
-            <Link key={item.href} href={item.href} className="block">
-              <Card className="h-full transition-colors hover:border-primary hover:bg-accent/50">
+            <Link key={item.href} href={item.href} className="group block">
+              <Card className="relative h-full transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
                 <CardHeader>
-                  <Icon className="mb-2 size-6 text-primary" />
+                  <div className="mb-3 flex items-start justify-between">
+                    <div className="rounded-lg bg-primary/10 p-2.5">
+                      <Icon className="size-5 text-primary" />
+                    </div>
+                    <ChevronRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-primary" />
+                  </div>
                   <CardTitle className="text-base">{item.label}</CardTitle>
-                  <CardDescription>準備中（後続タスクで実装）</CardDescription>
+                  <CardDescription>
+                    <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">
+                      準備中（後続タスクで実装）
+                    </span>
+                  </CardDescription>
                 </CardHeader>
               </Card>
             </Link>

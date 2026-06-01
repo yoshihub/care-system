@@ -16,7 +16,9 @@ export default function QualificationLayout({
       <AppSidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <AppHeader />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 bg-gradient-to-b from-muted/50 to-background p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

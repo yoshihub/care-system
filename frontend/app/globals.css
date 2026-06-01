@@ -1,52 +1,52 @@
 @import "tailwindcss";
 
 /*
- * 配色テーマ: 白〜ごく薄い緑を基調に、アクセントは落ち着いた緑。
- * 文字は見やすさ重視で黒。角丸はやや大きめ、影は控えめ（各コンポーネント側）。
+ * 配色テーマ: パターンE（ウォーム・公共サービス）。
+ * わずかに温かいオフホワイト背景 + ティールアクセント。介護・福祉の信頼感を意識。
  */
 :root {
   --radius: 0.75rem;
 
-  /* ベース: ごく薄い緑がかった背景 / 黒文字 */
-  --background: #f4f9f4;
-  --foreground: #000000;
+  /* ベース: ウォームオフホワイト / スレート文字 */
+  --background: #f7f9f8;
+  --foreground: #0f172a;
 
   /* カード・ポップオーバーは白 */
   --card: #ffffff;
-  --card-foreground: #000000;
+  --card-foreground: #0f172a;
   --popover: #ffffff;
-  --popover-foreground: #000000;
+  --popover-foreground: #0f172a;
 
-  /* プライマリ: 落ち着いた中間トーンの緑 */
-  --primary: #4a9d5b;
+  /* プライマリ: ティール（ケア・公共性） */
+  --primary: #0d9488;
   --primary-foreground: #ffffff;
 
-  /* セカンダリ・補助: 薄緑 */
-  --secondary: #e6f2e6;
-  --secondary-foreground: #000000;
-  --muted: #eef5ee;
-  --muted-foreground: #4b5563;
-  --accent: #d7eed9;
-  --accent-foreground: #14532d;
+  /* セカンダリ・補助 */
+  --secondary: #f1f5f4;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f4;
+  --muted-foreground: #64748b;
+  --accent: #ecfdf5;
+  --accent-foreground: #115e59;
 
   /* 業務エラー用の赤 */
   --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
   /* 境界・入力・フォーカスリング */
-  --border: #d8e6d8;
-  --input: #d8e6d8;
-  --ring: #4a9d5b;
+  --border: #dce7e4;
+  --input: #dce7e4;
+  --ring: #0d9488;
 
-  /* サイドバー */
-  --sidebar: #eef6ee;
-  --sidebar-foreground: #000000;
-  --sidebar-primary: #4a9d5b;
+  /* サイドバー（白ベース） */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0d9488;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #d7eed9;
-  --sidebar-accent-foreground: #14532d;
-  --sidebar-border: #d8e6d8;
-  --sidebar-ring: #4a9d5b;
+  --sidebar-accent: #ecfdf5;
+  --sidebar-accent-foreground: #115e59;
+  --sidebar-border: #dce7e4;
+  --sidebar-ring: #0d9488;
 }
 
 @theme inline {
