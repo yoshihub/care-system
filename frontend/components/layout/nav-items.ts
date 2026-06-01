@@ -20,8 +20,10 @@ export type NavItem = {
 };
 
 /** この業務エリア全体の対応業務名（ヘッダー表示用） */
-export const QUALIFICATION_BUSINESS_LABEL =
-  "被保険者資格";
+export const QUALIFICATION_BUSINESS_LABEL = "02 被保険者資格";
+
+/** 被保険者資格ダッシュボードのパス */
+export const QUALIFICATION_DASHBOARD_HREF = "/qualification";
 
 export const QUALIFICATION_NAV_ITEMS: NavItem[] = [
   {
