@@ -6,12 +6,19 @@ import { usePathname } from "next/navigation";
 import { QUALIFICATION_NAV_ITEMS } from "@/components/layout/nav-items";
 import { cn } from "@/lib/utils";
 
+type QualificationNavLinksProps = {
+  /** 業務メニューのラベル文字を表示するか */
+  showLabels: boolean;
+};
+
+const labelTransition =
+  "transition-[max-width,opacity,margin-left] duration-300 ease-in-out";
+
 /**
  * 被保険者資格エリアの業務メニューリンク（005_02 Navigation）。
- * 住民異動イベント / 被保険者一覧 / 証発行履歴へのナビゲーション。
- * 各画面の中身は後続タスク（006以降）で実装する。
+ * ラベルは DOM に残し max-width / opacity で滑らかに表示切替する。
  */
-export function QualificationNavLinks() {
+export function QualificationNavLinks({ showLabels }: QualificationNavLinksProps) {
   const pathname = usePathname();
 
   return (
@@ -24,15 +31,31 @@ export function QualificationNavLinks() {
           <Link
             key={item.href}
             href={item.href}
+            title={showLabels ? undefined : item.label}
             className={cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+              "flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm transition-colors",
               isActive
-                ? "bg-primary/10 font-medium text-primary"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                ? "bg-sidebar-accent font-medium text-white"
+                : "text-white/70 hover:bg-sidebar-accent hover:text-white"
             )}
           >
-            <Icon className="size-4 shrink-0" />
-            {item.label}
+            <Icon
+              className={cn(
+                "size-5 shrink-0 transition-[margin] duration-300 ease-in-out",
+                !showLabels && "mx-auto"
+              )}
+            />
+            <span
+              className={cn(
+                "block overflow-hidden whitespace-nowrap",
+                labelTransition,
+                showLabels
+                  ? "ml-3 max-w-[11rem] opacity-100"
+                  : "ml-0 max-w-0 opacity-0"
+              )}
+            >
+              {item.label}
+            </span>
           </Link>
         );
       })}
