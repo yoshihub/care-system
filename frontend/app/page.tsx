@@ -7,12 +7,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BUSINESS_CATEGORIES } from "@/lib/business-categories";
-import { cn } from "@/lib/utils";
 
 /**
  * トップページ（SCR-00 大分類ポータル）。
  * 介護保険システムの9大分類を表示する。今回のデモ対象は「被保険者資格」のみ活性で、
- * 選択すると被保険者資格ダッシュボードへ遷移する。他8大分類は表示のみで遷移しない。
+ * 選択すると被保険者資格ダッシュボードへ遷移する。他8大分類は見た目は同じで、クリックしても遷移しない。
  */
 export default function PortalPage() {
   return (
@@ -26,15 +25,8 @@ export default function PortalPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {BUSINESS_CATEGORIES.map((category) => {
-          const cardClass = cn(
-            "h-full transition-colors",
-            category.active
-              ? "border-primary/40 hover:border-primary hover:bg-accent/50"
-              : "opacity-70"
-          );
-
           const content = (
-            <Card className={cardClass}>
+            <Card className="h-full transition-colors border-primary/40 hover:border-primary hover:bg-accent/50">
               <CardHeader>
                 <CardTitle className="text-base">{category.name}</CardTitle>
                 <CardDescription>
@@ -53,15 +45,7 @@ export default function PortalPage() {
             );
           }
 
-          return (
-            <div
-              key={category.key}
-              aria-disabled="true"
-              className="cursor-default select-none"
-            >
-              {content}
-            </div>
-          );
+          return <div key={category.key}>{content}</div>;
         })}
       </div>
     </main>
