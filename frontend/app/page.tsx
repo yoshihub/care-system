@@ -7,7 +7,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { BUSINESS_CATEGORIES } from "@/lib/business-categories";
-import { cn } from "@/lib/utils";
+
+/** 9大分類カードの共通見た目（被保険者資格と同一デザイン） */
+const portalCardClassName =
+  "h-full ring-1 ring-primary/25 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md";
 
 /**
  * トップページ（SCR-00 大分類ポータル）。
@@ -29,26 +32,11 @@ export default function PortalPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {BUSINESS_CATEGORIES.map((category) => {
           const content = (
-            <Card
-              className={cn(
-                "h-full transition-all hover:-translate-y-0.5 hover:shadow-md",
-                category.active
-                  ? "ring-1 ring-primary/25 hover:border-primary/30"
-                  : "hover:border-border"
-              )}
-            >
+            <Card className={portalCardClassName}>
               <CardHeader>
                 <CardTitle className="text-base">{category.name}</CardTitle>
-                <CardDescription>
-                  {category.active ? (
-                    <span className="inline-flex rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                      このデモの対象業務
-                    </span>
-                  ) : (
-                    <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">
-                      今回のデモ対象外
-                    </span>
-                  )}
+                <CardDescription className="text-sm leading-relaxed">
+                  {category.description}
                 </CardDescription>
               </CardHeader>
             </Card>
