@@ -37,3 +37,14 @@ SCR-00 大分類ポータル
 - shadcn/uiのTable, Card, Button, Badge, Dialog, Formを利用する
 - 業務エラーは赤色のAlertで表示する
 - pending/processed/errorなどの状態はBadgeで表示する
+
+## UI・レイアウト（確定デザイン）
+配色・サイドバー・ポータルカード等の詳細は **`docs/specs/08_ui_design_guide.md`** を正とする。要点のみ:
+
+| 画面 | レイアウト |
+|---|---|
+| SCR-00 | サイドバーなし。9大分類カード（同一デザイン・各分類に短い説明文） |
+| SCR-DB 以降 | 左: ダークグラデーションサイドバー（白文字・三本線でメニュー文字トグル） / 上: ヘッダー / 中: メイン |
+
+- メインエリアのアクセント色は **インディゴ**（`globals.css` の `--primary`）。緑・ティールは使わない
+- 9大分類の名称・説明・活性の定義は `docs/standards/03_business_categories.md` および `frontend/lib/business-categories.ts`

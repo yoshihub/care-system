@@ -9,7 +9,7 @@ Cursorは実装前に必ず以下を読むこと。
 3. 実装対象taskに指定された `docs/standards/requirements/REQ-*.md`
 4. 実装対象taskに指定された `docs/standards/flows/FLOW-*.md`
 5. 実装対象taskに指定された `docs/standards/data/DATA-*.md`
-6. 実装対象taskに指定された `docs/specs/*.md`
+6. 実装対象taskに指定された `docs/specs/*.md`（フロントエンド画面では `docs/specs/08_ui_design_guide.md` を必ず含める）
 7. 実装対象の `docs/tasks_micro/*.md`
 
 ## 技術構成

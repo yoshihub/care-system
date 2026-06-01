@@ -5,6 +5,7 @@
 
 ## 必ず読む標準仕様抽出ファイル
 - `docs/specs/02_screen_spec.md`
+- `docs/specs/08_ui_design_guide.md`
 
 ## 対応する標準仕様
 - UI基盤

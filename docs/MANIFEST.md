@@ -13,6 +13,8 @@
 - `docs/specs/01_traceability_matrix.md`
 - `docs/specs/02_screen_spec.md`
 - `docs/specs/03_api_spec.md`
+- `docs/specs/08_ui_design_guide.md`
+- `docs/standards/03_business_categories.md`
 - `docs/specs/04_database_spec.md`
 - `docs/specs/05_csv_import_spec.md`
 - `docs/specs/06_report_spec.md`
