@@ -33,10 +33,10 @@ export function QualificationNavLinks({ showLabels }: QualificationNavLinksProps
             href={item.href}
             title={showLabels ? undefined : item.label}
             className={cn(
-              "flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm transition-colors",
+              "flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm font-medium transition-colors",
               isActive
-                ? "bg-sidebar-accent font-medium text-white"
-                : "text-white/70 hover:bg-sidebar-accent hover:text-white"
+                ? "bg-sidebar-accent font-semibold text-white"
+                : "text-sidebar-muted hover:bg-sidebar-accent hover:text-white"
             )}
           >
             <Icon

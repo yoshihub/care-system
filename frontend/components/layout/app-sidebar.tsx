@@ -36,7 +36,7 @@ export function AppSidebar() {
             "relative flex h-10 w-full min-w-0 items-center overflow-hidden rounded-lg px-2 text-sm font-semibold text-white transition-colors",
             isDashboard
               ? "bg-sidebar-accent"
-              : "text-white/80 hover:bg-sidebar-accent hover:text-white"
+              : "text-sidebar-muted hover:bg-sidebar-accent hover:text-white"
           )}
         >
           <span
@@ -66,7 +66,7 @@ export function AppSidebar() {
           <button
             type="button"
             onClick={() => setShowMenuLabels((prev) => !prev)}
-            className="shrink-0 rounded-lg p-2 text-white/80 transition-colors hover:bg-sidebar-accent hover:text-white"
+            className="shrink-0 rounded-lg p-2 text-white transition-colors hover:bg-sidebar-accent"
             aria-label={
               showMenuLabels
                 ? "業務メニューの文字を隠す"
@@ -78,7 +78,7 @@ export function AppSidebar() {
           </button>
           <span
             className={cn(
-              "block overflow-hidden whitespace-nowrap text-xs font-medium uppercase tracking-wider text-white/50",
+              "block overflow-hidden whitespace-nowrap text-xs font-semibold uppercase tracking-wider text-sidebar-muted",
               labelTransition,
               showMenuLabels
                 ? "max-w-[8rem] opacity-100"
@@ -95,7 +95,7 @@ export function AppSidebar() {
         <Link
           href="/"
           title="大分類トップへ"
-          className="flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm text-white/70 transition-colors hover:bg-sidebar-accent hover:text-white"
+          className="flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm font-medium text-sidebar-muted transition-colors hover:bg-sidebar-accent hover:text-white"
         >
           <ArrowLeft
             className={cn(
