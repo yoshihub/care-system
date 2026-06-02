@@ -51,9 +51,8 @@ PoCフロントエンドの見た目・レイアウト・配色の正を定義�
 
 | ファイル | 役割 |
 |---|---|
-| `frontend/components/layout/app-sidebar.tsx` | ダークグラデーションサイドバー、三本線トグル |
+| `frontend/components/layout/app-sidebar.tsx` | ダークグラデーションサイドバー、三本線トグル、業務メニューリンク |
 | `frontend/components/layout/app-header.tsx` | システム名 + 対応業務バッジ |
-| `frontend/components/layout/qualification-nav-links.tsx` | 業務メニューリンク |
 | `frontend/components/layout/nav-items.ts` | メニュー定義（href・ラベル・アイコン） |
 | `frontend/lib/business-categories.ts` | 9大分類ポータル用データ |
 

@@ -5,14 +5,31 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowLeft, Menu, Shield } from "lucide-react";
 
-import { QualificationNavLinks } from "@/components/layout/qualification-nav-links";
-import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
 import {
-  SidebarIconLink,
-  SidebarLabel,
-  sidebarAsideClass,
-} from "@/components/layout/sidebar-parts";
+  QUALIFICATION_DASHBOARD_HREF,
+  QUALIFICATION_NAV_ITEMS,
+} from "@/components/layout/nav-items";
 import { cn } from "@/lib/utils";
+
+const motion =
+  "transition-[width,max-width,opacity] duration-300 ease-in-out";
+
+function labelClass(expanded: boolean, max = "max-w-44", extra?: string) {
+  return cn(
+    "block min-w-0 overflow-hidden whitespace-nowrap",
+    motion,
+    expanded ? cn(max, "opacity-100") : "max-w-0 opacity-0",
+    extra
+  );
+}
+
+const navLinkClass = (active: boolean) =>
+  cn(
+    "flex h-10 w-full items-center overflow-hidden rounded-lg px-2 text-sm font-medium transition-colors",
+    active
+      ? "bg-sidebar-accent font-semibold text-white"
+      : "text-sidebar-muted hover:bg-sidebar-accent hover:text-white"
+  );
 
 /** 被保険者資格エリアの左サイドバー。三本線でラベル表示をトグル。 */
 export function AppSidebar() {
@@ -21,7 +38,13 @@ export function AppSidebar() {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <aside className={sidebarAsideClass(expanded)}>
+    <aside
+      className={cn(
+        "flex shrink-0 flex-col border-r border-sidebar-border bg-gradient-to-b from-[var(--sidebar-from)] to-[var(--sidebar-to)] text-sidebar-foreground",
+        motion,
+        expanded ? "w-60" : "w-[4.5rem]"
+      )}
+    >
       <div className="flex h-16 items-center border-b border-sidebar-border px-2">
         <Link
           href={QUALIFICATION_DASHBOARD_HREF}
@@ -36,9 +59,9 @@ export function AppSidebar() {
           <span className="flex size-9 shrink-0 items-center justify-center">
             <Shield className="size-5" />
           </span>
-          <SidebarLabel expanded={expanded} size="full">
+          <span className={labelClass(expanded, "max-w-full")}>
             被保険者資格
-          </SidebarLabel>
+          </span>
         </Link>
       </div>
 
@@ -57,24 +80,48 @@ export function AppSidebar() {
           >
             <Menu className="size-5" />
           </button>
-          <SidebarLabel
-            expanded={expanded}
-            size="sm"
-            className="text-xs font-semibold uppercase tracking-wider text-sidebar-muted"
+          <span
+            className={labelClass(
+              expanded,
+              "max-w-32",
+              "text-xs font-semibold uppercase tracking-wider text-sidebar-muted"
+            )}
           >
             業務メニュー
-          </SidebarLabel>
+          </span>
         </div>
-        <QualificationNavLinks expanded={expanded} />
+
+        {QUALIFICATION_NAV_ITEMS.map((item) => {
+          const active =
+            pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              title={expanded ? undefined : item.label}
+              className={navLinkClass(active)}
+            >
+              <span className="flex size-9 shrink-0 items-center justify-center">
+                <Icon className="size-5" />
+              </span>
+              <span className={labelClass(expanded)}>{item.label}</span>
+            </Link>
+          );
+        })}
       </nav>
 
       <div className="border-t border-sidebar-border p-3">
-        <SidebarIconLink
+        <Link
           href="/"
-          icon={ArrowLeft}
-          label="大分類トップへ"
-          expanded={expanded}
-        />
+          title={expanded ? undefined : "大分類トップへ"}
+          className={navLinkClass(false)}
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center">
+            <ArrowLeft className="size-5" />
+          </span>
+          <span className={labelClass(expanded)}>大分類トップへ</span>
+        </Link>
       </div>
     </aside>
   );
