@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ResidentChangeEventController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,3 +20,8 @@ Route::get('/health', function () {
         'backend' => 'Laravel',
     ]);
 });
+
+// 住民異動イベント一覧（未処理/処理済み/エラーの状況確認用）
+Route::get('/resident-change-events', [ResidentChangeEventController::class, 'index']);
+// 住民異動イベント手入力登録（登録直後は未処理）
+Route::post('/resident-change-events', [ResidentChangeEventController::class, 'store']);
