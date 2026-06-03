@@ -6,17 +6,27 @@ use App\Models\ResidentChangeEvent;
 use DateTime;
 
 /**
- * 住民異動イベントCSVの検証ロジック。
+ * 住民異動イベントCSVの「中身チェック」専用クラス。
  *
- * このクラスは「不正なCSVを検出する」ことだけを担当する。
- * DB登録や業務処理（資格登録など）は別タスクで実装する。
+ * 【このクラスの役割】
+ * CSVをDBに登録する前に、「形式が正しいか」「必須項目が埋まっているか」を調べる。
+ * 問題があればエラー内容を返す。DBへの書き込みは行わない。
+ *
+ * 【使い方のイメージ】
+ * 1. CSVの1行目（ヘッダ）と2行目以降（データ）を配列として渡す
+ * 2. validate() を呼ぶ
+ * 3. ok が true なら取込OK、false なら header_errors / row_errors を画面などに表示
+ *
+ * 【チェック内容】
+ * - ヘッダ行: 列名と順番が仕様どおりか
+ * - 各行: 必須項目、日付形式、異動種別の値、イベントIDの重複
  */
 class ResidentChangeCsvValidationService
 {
     /**
-     * CSVで期待するヘッダ（順番も含めて一致させる）。
+     * CSVの1行目に並ぶべき列名（この順番で並んでいる必要がある）。
      *
-     * note はCSV上の備考欄で、DBには保存しない想定（後続タスクで扱う）。
+     * note はCSV上の備考欄。DBには保存しない。
      *
      * @var array<int, string>
      */
@@ -42,32 +52,38 @@ class ResidentChangeCsvValidationService
     ];
 
     /**
-     * 取り込める異動種別。
+     * 取り込みを許可する異動種別。
+     * それ以外の値が入っていたらエラーにする。
      *
      * @var array<int, string>
      */
     private const EVENT_TYPES = [
-        'AGE_65',
-        'MOVE_IN',
-        'MOVE_OUT',
-        'DEATH',
-        'ADDRESS_CHANGE',
-        'NAME_CHANGE',
+        'AGE_65',         // 65歳到達
+        'MOVE_IN',        // 転入
+        'MOVE_OUT',       // 転出
+        'DEATH',          // 死亡
+        'ADDRESS_CHANGE', // 住所変更
+        'NAME_CHANGE',    // 氏名変更
     ];
 
     /**
-     * CSVヘッダと行データを検証する。
+     * CSV全体を検証する（メインの入口）。
      *
-     * @param array<int, string> $header 1行目のヘッダ
-     * @param array<int, array<int, string|null>> $rows 2行目以降のデータ（fgetcsv の配列想定）
-     * @return array{ok: bool, header_errors: array<int, string>, row_errors: array<int, array{row: int, field: string, message: string}>}
+     * @param array<int, string> $header CSV 1行目（fgetcsv の結果）
+     * @param array<int, array<int, string|null>> $rows CSV 2行目以降
+     * @return array{
+     *   ok: bool,
+     *   header_errors: array<int, string>,
+     *   row_errors: array<int, array{row: int, field: string, message: string}>
+     * }
      */
     public function validate(array $header, array $rows): array
     {
+        // ステップ1: ヘッダ行をチェック
         $headerErrors = $this->validateHeader($header);
         $rowErrors = [];
 
-        // ヘッダが不正な場合、行の検証は「列の対応が崩れる」のでここで止める。
+        // ヘッダが違うと、列の対応関係が崩れるので行チェックはしない
         if (count($headerErrors) > 0) {
             return [
                 'ok' => false,
@@ -76,17 +92,21 @@ class ResidentChangeCsvValidationService
             ];
         }
 
-        // event_uid の重複チェック（CSV内 + 既にDBにあるもの）
+        // ステップ2: 重複チェック用に、全行の event_uid を先に集める
+        // （1行ずつ見るより、先にまとめて調べた方が効率的）
         $eventUids = $this->collectColumnValues($rows, 0);
         $duplicatedInCsv = $this->findDuplicatedValues($eventUids);
         $alreadyExists = $this->findExistingEventUids($eventUids);
 
+        // ステップ3: データ行を1行ずつチェック
         foreach ($rows as $index => $row) {
-            // CSVの行番号は 1:ヘッダ、2〜:データ
+            // CSV上の行番号（1行目=ヘッダ、2行目=データ1件目）
             $rowNo = $index + 2;
+
+            // 配列 [値0, 値1, ...] を ['event_uid' => 値0, ...] の形に変換
             $data = $this->rowToAssoc($row);
 
-            // 必須項目
+            // --- 必須項目 ---
             $this->require($rowErrors, $rowNo, $data, 'event_uid', 'イベントIDは必須です。');
             $this->require($rowErrors, $rowNo, $data, 'municipality_code', '自治体コードは必須です。');
             $this->require($rowErrors, $rowNo, $data, 'resident_no', '住民番号は必須です。');
@@ -94,7 +114,7 @@ class ResidentChangeCsvValidationService
             $this->require($rowErrors, $rowNo, $data, 'event_date', '異動日は必須です。');
             $this->require($rowErrors, $rowNo, $data, 'name', '氏名は必須です。');
 
-            // enum / 日付
+            // --- 異動種別: 定義済み6種以外は不可 ---
             if ($this->hasValue($data, 'event_type') && !in_array($data['event_type'], self::EVENT_TYPES, true)) {
                 $rowErrors[] = [
                     'row' => $rowNo,
@@ -103,6 +123,7 @@ class ResidentChangeCsvValidationService
                 ];
             }
 
+            // --- 日付形式: YYYY-MM-DD のみ許可 ---
             if ($this->hasValue($data, 'event_date') && !$this->isValidDate($data['event_date'])) {
                 $rowErrors[] = [
                     'row' => $rowNo,
@@ -111,6 +132,7 @@ class ResidentChangeCsvValidationService
                 ];
             }
 
+            // 生年月日は任意だが、入力されている場合は日付形式をチェック
             if ($this->hasValue($data, 'birth_date') && !$this->isValidDate($data['birth_date'])) {
                 $rowErrors[] = [
                     'row' => $rowNo,
@@ -119,10 +141,11 @@ class ResidentChangeCsvValidationService
                 ];
             }
 
-            // event_uid の重複
+            // --- イベントIDの重複 ---
             if ($this->hasValue($data, 'event_uid')) {
                 $uid = $data['event_uid'];
 
+                // 同じCSVファイル内で同じIDが2回以上出てきた
                 if (in_array($uid, $duplicatedInCsv, true)) {
                     $rowErrors[] = [
                         'row' => $rowNo,
@@ -131,6 +154,7 @@ class ResidentChangeCsvValidationService
                     ];
                 }
 
+                // すでにDBに登録済みのID
                 if (in_array($uid, $alreadyExists, true)) {
                     $rowErrors[] = [
                         'row' => $rowNo,
@@ -141,6 +165,7 @@ class ResidentChangeCsvValidationService
             }
         }
 
+        // 行エラーが1件もなければ ok = true
         return [
             'ok' => count($rowErrors) === 0,
             'header_errors' => [],
@@ -149,15 +174,16 @@ class ResidentChangeCsvValidationService
     }
 
     /**
+     * ヘッダ行が仕様どおりかチェックする。
+     *
      * @param array<int, string> $header
-     * @return array<int, string>
+     * @return array<int, string> エラーメッセージ（問題なければ空配列）
      */
     private function validateHeader(array $header): array
     {
         $normalized = array_map(fn ($v) => $this->normalizeHeaderValue($v), $header);
-        $expected = self::EXPECTED_HEADER;
 
-        if ($normalized === $expected) {
+        if ($normalized === self::EXPECTED_HEADER) {
             return [];
         }
 
@@ -166,16 +192,22 @@ class ResidentChangeCsvValidationService
         ];
     }
 
+    /**
+     * ヘッダの1セルを正規化する（前後空白・BOM除去）。
+     */
     private function normalizeHeaderValue(?string $value): string
     {
         $v = $value ?? '';
         $v = trim($v);
-        // Excel由来のBOMや不可視文字を軽く除去
+        // Excelで保存したCSVに付くことがある BOM を除去
         $v = preg_replace('/^\xEF\xBB\xBF/', '', $v) ?? $v;
+
         return $v;
     }
 
     /**
+     * 指定列の値を全行分集める（重複チェック用）。
+     *
      * @param array<int, array<int, string|null>> $rows
      * @return array<int, string>
      */
@@ -189,10 +221,13 @@ class ResidentChangeCsvValidationService
                 $values[] = $v;
             }
         }
+
         return $values;
     }
 
     /**
+     * 配列の中で2回以上出てきた値を返す（CSV内重複の検出）。
+     *
      * @param array<int, string> $values
      * @return array<int, string>
      */
@@ -209,10 +244,13 @@ class ResidentChangeCsvValidationService
                 $duplicated[] = $v;
             }
         }
+
         return $duplicated;
     }
 
     /**
+     * DBにすでに存在する event_uid を返す（二重取込防止）。
+     *
      * @param array<int, string> $eventUids
      * @return array<int, string>
      */
@@ -229,6 +267,10 @@ class ResidentChangeCsvValidationService
     }
 
     /**
+     * fgetcsv の1行（数値添字配列）を、列名付きの連想配列に変換する。
+     *
+     * 例: ['EVT-001', '131016', ...] → ['event_uid' => 'EVT-001', 'municipality_code' => '131016', ...]
+     *
      * @param array<int, string|null> $row
      * @return array<string, string>
      */
@@ -240,10 +282,13 @@ class ResidentChangeCsvValidationService
             $value = is_string($raw) ? trim($raw) : '';
             $assoc[$key] = $value;
         }
+
         return $assoc;
     }
 
     /**
+     * 必須項目チェック。空なら rowErrors に追加する。
+     *
      * @param array<int, array{row: int, field: string, message: string}> $rowErrors
      * @param array<string, string> $data
      */
@@ -259,6 +304,8 @@ class ResidentChangeCsvValidationService
     }
 
     /**
+     * 項目に値が入っているか（空文字・空白のみは「値なし」とみなす）。
+     *
      * @param array<string, string> $data
      */
     private function hasValue(array $data, string $field): bool
@@ -266,16 +313,21 @@ class ResidentChangeCsvValidationService
         if (!array_key_exists($field, $data)) {
             return false;
         }
+
         return trim((string) $data[$field]) !== '';
     }
 
+    /**
+     * YYYY-MM-DD 形式の日付かどうかを判定する。
+     */
     private function isValidDate(string $value): bool
     {
         $dt = DateTime::createFromFormat('Y-m-d', $value);
         if ($dt === false) {
             return false;
         }
+
+        // 2026-13-01 のような存在しない日付を弾くため、再フォーマットして一致確認
         return $dt->format('Y-m-d') === $value;
     }
 }
-
