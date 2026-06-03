@@ -44,6 +44,39 @@ class ResidentChangeEvent extends Model
     /** @use HasFactory<ResidentChangeEventFactory> */
     use HasFactory;
 
+    /** 未処理（資格登録待ち） */
+    public const STATUS_PENDING = 'pending';
+
+    /** 処理済み（資格登録などが完了） */
+    public const STATUS_PROCESSED = 'processed';
+
+    /** エラー（処理失敗。error_message に理由） */
+    public const STATUS_ERROR = 'error';
+
+    /**
+     * 未処理かどうか。
+     */
+    public function isPending(): bool
+    {
+        return $this->process_status === self::STATUS_PENDING;
+    }
+
+    /**
+     * 処理済みかどうか。
+     */
+    public function isProcessed(): bool
+    {
+        return $this->process_status === self::STATUS_PROCESSED;
+    }
+
+    /**
+     * エラー状態かどうか。
+     */
+    public function isError(): bool
+    {
+        return $this->process_status === self::STATUS_ERROR;
+    }
+
     /**
      * @return array<string, string>
      */
