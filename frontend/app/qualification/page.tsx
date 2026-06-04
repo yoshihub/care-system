@@ -26,6 +26,8 @@ export default function QualificationDashboardPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {QUALIFICATION_NAV_ITEMS.map((item) => {
           const Icon = item.icon;
+          const isResidentChange =
+            item.href === "/qualification/resident-change-events";
           return (
             <Link key={item.href} href={item.href} className="group block">
               <Card className="relative h-full transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5">
@@ -38,9 +40,15 @@ export default function QualificationDashboardPage() {
                   </div>
                   <CardTitle className="text-base">{item.label}</CardTitle>
                   <CardDescription>
-                    <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">
-                      準備中（後続タスクで実装）
-                    </span>
+                    {isResidentChange ? (
+                      <span className="text-muted-foreground">
+                        異動イベントの取込と一覧確認
+                      </span>
+                    ) : (
+                      <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">
+                        準備中（後続タスクで実装）
+                      </span>
+                    )}
                   </CardDescription>
                 </CardHeader>
               </Card>
