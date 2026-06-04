@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ChevronRight, ListChecks } from "lucide-react";
 
+import { ResidentChangeEventsTable } from "@/components/resident-change/resident-change-events-table";
+import type { ResidentChangeEventRow } from "@/components/resident-change/resident-change-events-table";
 import {
   Card,
   CardContent,
@@ -9,12 +11,30 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
+import { backendFetch } from "@/lib/backend";
+
+type EventsApiResponse = {
+  data: ResidentChangeEventRow[];
+  meta: { message: string };
+};
 
 /**
- * 住民異動イベント一覧/取込（SCR-01）の画面枠。
- * 一覧テーブル・CSVアップロード・手入力フォームは後続タスクで実装する。
+ * 住民異動イベント一覧/取込（SCR-01）。
+ * Laravel API を BFF と同じ経路（backendFetch）で取得して表示する。
  */
-export default function ResidentChangeEventsPage() {
+export default async function ResidentChangeEventsPage() {
+  let events: ResidentChangeEventRow[] = [];
+  let loadError: string | null = null;
+
+  try {
+    const response = await backendFetch<EventsApiResponse>(
+      "/api/resident-change-events"
+    );
+    events = response.data ?? [];
+  } catch {
+    loadError = "一覧の取得に失敗しました。しばらくしてから再度お試しください。";
+  }
+
   return (
     <div className="mx-auto w-full max-w-5xl -mt-1">
       <nav
@@ -40,24 +60,31 @@ export default function ResidentChangeEventsPage() {
 
       <Card className="overflow-hidden border-border/60 shadow-sm">
         <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
-          <div className="flex items-center gap-2">
-            <ListChecks className="size-5 text-primary" />
-            <CardTitle className="text-lg">イベント一覧</CardTitle>
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <ListChecks className="size-5 text-primary" />
+                <CardTitle className="text-lg">イベント一覧</CardTitle>
+              </div>
+              <CardDescription className="mt-1">
+                未処理・処理済み・エラーの状態でイベントを確認します
+              </CardDescription>
+            </div>
+            {!loadError && (
+              <span className="shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tabular-nums text-primary">
+                {events.length} 件
+              </span>
+            )}
           </div>
-          <CardDescription>
-            未処理・処理済み・エラーの状態でイベントを確認します
-          </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center px-6 py-5 text-center">
-          <div className="mb-3 flex size-12 items-center justify-center rounded-xl bg-muted/80 ring-1 ring-border/60">
-            <ListChecks className="size-6 text-muted-foreground/70" />
-          </div>
-          <p className="text-sm font-medium text-foreground">
-            一覧テーブルは次のタスクで表示します
-          </p>
-          <p className="mt-2 max-w-sm text-sm text-muted-foreground">
-            検索フィルタ・状態バッジ・CSVアップロードは後続タスク（007_03〜007_04）で実装予定です。
-          </p>
+        <CardContent className="p-0">
+          {loadError ? (
+            <p className="px-6 py-8 text-center text-sm text-destructive">
+              {loadError}
+            </p>
+          ) : (
+            <ResidentChangeEventsTable events={events} />
+          )}
         </CardContent>
       </Card>
     </div>
