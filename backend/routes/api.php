@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\InsuredPersonController;
 use App\Http\Controllers\Api\ResidentChangeEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,6 @@ Route::get('/resident-change-events', [ResidentChangeEventController::class, 'in
 Route::post('/resident-change-events', [ResidentChangeEventController::class, 'store']);
 // 住民異動イベントCSV取込
 Route::post('/resident-change-events/import', [ResidentChangeEventController::class, 'import']);
+
+// 被保険者一覧（資格情報照会・一覧確認）
+Route::get('/insured-persons', [InsuredPersonController::class, 'index']);
