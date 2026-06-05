@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, ListChecks } from "lucide-react";
 
+import { ResidentChangeCsvUpload } from "@/components/resident-change/resident-change-csv-upload";
 import { ResidentChangeEventsTable } from "@/components/resident-change/resident-change-events-table";
 import type { ResidentChangeEventRow } from "@/components/resident-change/resident-change-events-table";
 import {
@@ -57,6 +58,8 @@ export default async function ResidentChangeEventsPage() {
           住民記録で発生した異動情報を取り込み、未処理のイベントを確認します
         </p>
       </header>
+
+      <ResidentChangeCsvUpload />
 
       <Card className="overflow-hidden border-border/60 shadow-sm">
         <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">

@@ -25,3 +25,5 @@ Route::get('/health', function () {
 Route::get('/resident-change-events', [ResidentChangeEventController::class, 'index']);
 // 住民異動イベント手入力登録（登録直後は未処理）
 Route::post('/resident-change-events', [ResidentChangeEventController::class, 'store']);
+// 住民異動イベントCSV取込
+Route::post('/resident-change-events/import', [ResidentChangeEventController::class, 'import']);

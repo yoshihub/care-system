@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreResidentChangeEventRequest;
 use App\Http\Resources\ResidentChangeEventResource;
 use App\Models\ResidentChangeEvent;
+use App\Services\ResidentChangeImportService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -86,5 +87,33 @@ class ResidentChangeEventController extends Controller
             ->additional(['meta' => ['message' => 'ok']])
             ->response()
             ->setStatusCode(201);
+    }
+
+    /**
+     * CSVファイルを取り込む。
+     */
+    public function import(Request $request, ResidentChangeImportService $importService): JsonResponse
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'max:2048'],
+        ]);
+
+        $uploaded = $request->file('file');
+        $csvContent = file_get_contents($uploaded->getRealPath());
+        if ($csvContent === false) {
+            return response()->json([
+                'message' => 'CSVファイルの読み込みに失敗しました。',
+            ], 400);
+        }
+
+        $fileName = $uploaded->getClientOriginalName();
+        $result = $importService->import($csvContent, $fileName);
+
+        $status = $result['ok'] ? 200 : 422;
+
+        return response()->json([
+            'data' => $result,
+            'meta' => ['message' => $result['ok'] ? 'ok' : 'validation_failed'],
+        ], $status);
     }
 }
