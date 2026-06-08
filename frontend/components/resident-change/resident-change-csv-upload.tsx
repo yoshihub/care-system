@@ -89,7 +89,7 @@ export function ResidentChangeCsvUpload() {
         <div className="flex flex-wrap items-center gap-2">
           <Upload className="size-5 shrink-0 text-primary" />
           <CardTitle className="text-lg">CSV取込</CardTitle>
-          <span className="text-sm text-muted-foreground">
+          <span className="ml-6 text-sm text-muted-foreground">
             住民異動イベントのCSVファイルをアップロードして登録します
           </span>
         </div>

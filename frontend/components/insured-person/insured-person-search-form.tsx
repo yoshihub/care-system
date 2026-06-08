@@ -70,7 +70,7 @@ export function InsuredPersonSearchForm({
         <div className="flex items-center gap-2">
           <Search className="size-5 shrink-0 text-primary" />
           <CardTitle className="text-lg">検索</CardTitle>
-          <span className="text-sm text-muted-foreground">
+          <span className="ml-6 text-sm text-muted-foreground">
             氏名・カナ・番号で絞り込み
           </span>
         </div>
