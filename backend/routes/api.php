@@ -31,3 +31,5 @@ Route::post('/resident-change-events/import', [ResidentChangeEventController::cl
 
 // 被保険者一覧（資格情報照会・一覧確認）
 Route::get('/insured-persons', [InsuredPersonController::class, 'index']);
+// 被保険者詳細（基本情報・各種履歴）
+Route::get('/insured-persons/{id}', [InsuredPersonController::class, 'show']);

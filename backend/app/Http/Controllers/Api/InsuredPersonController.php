@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\InsuredPersonDetailResource;
 use App\Http\Resources\InsuredPersonResource;
 use App\Models\InsuredPerson;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -61,6 +63,37 @@ class InsuredPersonController extends Controller
             ->get();
 
         return InsuredPersonResource::collection($persons)
+            ->additional(['meta' => ['message' => 'ok']]);
+    }
+
+    /**
+     * 被保険者詳細。
+     *
+     * 基本情報・資格履歴・証発行履歴・再交付申請履歴を返す。
+     */
+    public function show(string $id): JsonResponse|InsuredPersonDetailResource
+    {
+        $person = InsuredPerson::query()
+            ->with([
+                'qualificationHistories' => fn ($query) => $query
+                    ->orderByDesc('qualification_date')
+                    ->orderByDesc('id'),
+                'certificateIssueHistories' => fn ($query) => $query
+                    ->orderByDesc('issue_date')
+                    ->orderByDesc('id'),
+                'reissueApplications' => fn ($query) => $query
+                    ->orderByDesc('application_date')
+                    ->orderByDesc('id'),
+            ])
+            ->find($id);
+
+        if ($person === null) {
+            return response()->json([
+                'message' => '被保険者が見つかりません。',
+            ], 404);
+        }
+
+        return (new InsuredPersonDetailResource($person))
             ->additional(['meta' => ['message' => 'ok']]);
     }
 }
