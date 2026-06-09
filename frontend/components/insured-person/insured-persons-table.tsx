@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { InsuredStatusBadge } from "@/components/insured-person/insured-status-badge";
 import {
   Table,
@@ -75,8 +77,13 @@ export function InsuredPersonsTable({ persons }: InsuredPersonsTableProps) {
             >
               {person.insured_no}
             </TableCell>
-            <TableCell className={cn("py-3.5 font-medium text-foreground", cellPad)}>
-              {person.name}
+            <TableCell className={cn("py-3.5 font-medium", cellPad)}>
+              <Link
+                href={`/qualification/insured-persons/${person.id}`}
+                className="text-foreground transition-colors hover:text-primary"
+              >
+                {person.name}
+              </Link>
             </TableCell>
             <TableCell
               className={cn("py-3.5 tabular-nums text-muted-foreground", cellPad)}
