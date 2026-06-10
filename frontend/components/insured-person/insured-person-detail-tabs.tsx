@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
-import { ClipboardList, IdCard, User } from "lucide-react";
+import { ClipboardList, FilePenLine, IdCard, User } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 
 import {
   CertificateIssueHistoriesTable,
@@ -15,28 +18,37 @@ import {
   QualificationHistoriesTable,
   type QualificationHistoryRow,
 } from "@/components/insured-person/qualification-histories-table";
+import {
+  ReissueApplicationsTable,
+  type ReissueApplicationRow,
+} from "@/components/insured-person/reissue-applications-table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-type TabId = "basic" | "qualification" | "certificate";
+type TabId = "basic" | "qualification" | "certificate" | "reissue";
 
 const TABS: { id: TabId; label: string; icon: typeof User }[] = [
   { id: "basic", label: "基本情報", icon: User },
   { id: "qualification", label: "資格履歴", icon: ClipboardList },
   { id: "certificate", label: "証発行履歴", icon: IdCard },
+  { id: "reissue", label: "再交付申請", icon: FilePenLine },
 ];
 
 type InsuredPersonDetailTabsProps = {
+  insuredPersonId: number;
   basicInfo: InsuredPersonBasicInfo;
   qualificationHistories: QualificationHistoryRow[];
   certificateIssueHistories: CertificateIssueHistoryRow[];
+  reissueApplications: ReissueApplicationRow[];
 };
 
 /** 被保険者詳細のタブ切り替え */
 export function InsuredPersonDetailTabs({
+  insuredPersonId,
   basicInfo,
   qualificationHistories,
   certificateIssueHistories,
+  reissueApplications,
 }: InsuredPersonDetailTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("basic");
 
@@ -118,6 +130,37 @@ export function InsuredPersonDetailTabs({
               <CertificateIssueHistoriesTable
                 histories={certificateIssueHistories}
               />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {activeTab === "reissue" && (
+        <div role="tabpanel">
+          <Card className="overflow-hidden border-border/60 shadow-sm">
+            <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
+              <div className="flex flex-wrap items-center gap-2 gap-y-1">
+                <FilePenLine className="size-5 shrink-0 text-primary" />
+                <CardTitle className="text-lg">再交付申請</CardTitle>
+                <span className="ml-6 text-sm text-muted-foreground">
+                  再交付申請の受付状況を確認します
+                </span>
+                <div className="ml-auto flex shrink-0 items-center gap-2">
+                  <Button asChild size="sm">
+                    <Link
+                      href={`/qualification/insured-persons/${insuredPersonId}/reissue-application`}
+                    >
+                      再交付申請
+                    </Link>
+                  </Button>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tabular-nums text-primary">
+                    {reissueApplications.length} 件
+                  </span>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ReissueApplicationsTable applications={reissueApplications} />
             </CardContent>
           </Card>
         </div>
