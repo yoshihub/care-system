@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { ClipboardList, User } from "lucide-react";
+import { ClipboardList, IdCard, User } from "lucide-react";
 
+import {
+  CertificateIssueHistoriesTable,
+  type CertificateIssueHistoryRow,
+} from "@/components/insured-person/certificate-issue-histories-table";
 import {
   InsuredPersonBasicInfoCard,
   type InsuredPersonBasicInfo,
@@ -14,22 +18,25 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-type TabId = "basic" | "qualification";
+type TabId = "basic" | "qualification" | "certificate";
 
 const TABS: { id: TabId; label: string; icon: typeof User }[] = [
   { id: "basic", label: "基本情報", icon: User },
   { id: "qualification", label: "資格履歴", icon: ClipboardList },
+  { id: "certificate", label: "証発行履歴", icon: IdCard },
 ];
 
 type InsuredPersonDetailTabsProps = {
   basicInfo: InsuredPersonBasicInfo;
   qualificationHistories: QualificationHistoryRow[];
+  certificateIssueHistories: CertificateIssueHistoryRow[];
 };
 
 /** 被保険者詳細のタブ切り替え */
 export function InsuredPersonDetailTabs({
   basicInfo,
   qualificationHistories,
+  certificateIssueHistories,
 }: InsuredPersonDetailTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("basic");
 
@@ -88,6 +95,29 @@ export function InsuredPersonDetailTabs({
             </CardHeader>
             <CardContent className="p-0">
               <QualificationHistoriesTable histories={qualificationHistories} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+      {activeTab === "certificate" && (
+        <div role="tabpanel">
+          <Card className="overflow-hidden border-border/60 shadow-sm">
+            <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
+              <div className="flex flex-wrap items-center gap-2 gap-y-1">
+                <IdCard className="size-5 shrink-0 text-primary" />
+                <CardTitle className="text-lg">証発行履歴</CardTitle>
+                <span className="ml-6 text-sm text-muted-foreground">
+                  被保険者証などの発行履歴を確認します
+                </span>
+                <span className="ml-auto shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tabular-nums text-primary">
+                  {certificateIssueHistories.length} 件
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <CertificateIssueHistoriesTable
+                histories={certificateIssueHistories}
+              />
             </CardContent>
           </Card>
         </div>

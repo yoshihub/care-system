@@ -8,6 +8,7 @@ import {
 import {
   type InsuredPersonBasicInfo,
 } from "@/components/insured-person/insured-person-basic-info-card";
+import type { CertificateIssueHistoryRow } from "@/components/insured-person/certificate-issue-histories-table";
 import type { QualificationHistoryRow } from "@/components/insured-person/qualification-histories-table";
 import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
 import { BackendApiError, backendFetch } from "@/lib/backend";
@@ -16,6 +17,7 @@ type InsuredPersonDetailApiResponse = {
   data: {
     basic_info: InsuredPersonBasicInfo;
     qualification_histories: QualificationHistoryRow[];
+    certificate_issue_histories: CertificateIssueHistoryRow[];
   };
   meta: { message: string };
 };
@@ -32,6 +34,7 @@ export default async function InsuredPersonDetailPage({
   const { id } = await params;
   let basicInfo: InsuredPersonBasicInfo | null = null;
   let qualificationHistories: QualificationHistoryRow[] = [];
+  let certificateIssueHistories: CertificateIssueHistoryRow[] = [];
   let loadError: string | null = null;
 
   try {
@@ -40,6 +43,7 @@ export default async function InsuredPersonDetailPage({
     );
     basicInfo = response.data.basic_info;
     qualificationHistories = response.data.qualification_histories ?? [];
+    certificateIssueHistories = response.data.certificate_issue_histories ?? [];
   } catch (error) {
     if (error instanceof BackendApiError && error.status === 404) {
       notFound();
@@ -78,7 +82,7 @@ export default async function InsuredPersonDetailPage({
             {basicInfo?.name ?? "被保険者詳細"}
           </h1>
           <p className="ml-6 text-sm text-muted-foreground">
-            被保険者の基本情報・資格履歴を確認します
+            被保険者の基本情報・資格履歴・証発行履歴を確認します
           </p>
         </div>
       </header>
@@ -91,6 +95,7 @@ export default async function InsuredPersonDetailPage({
         <InsuredPersonDetailTabs
           basicInfo={basicInfo}
           qualificationHistories={qualificationHistories}
+          certificateIssueHistories={certificateIssueHistories}
         />
       ) : null}
     </div>
