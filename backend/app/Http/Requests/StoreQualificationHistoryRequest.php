@@ -10,7 +10,7 @@ use Illuminate\Validation\Validator;
  * 資格登録リクエスト。
  *
  * 住民異動イベントをもとに qualification_histories を登録する際の入力検証。
- * 業務ロジック本体は QualificationRegistrationService（011_03）側で行う。
+ * 業務ロジック本体は資格登録 Service 側で行う。
  */
 class StoreQualificationHistoryRequest extends FormRequest
 {

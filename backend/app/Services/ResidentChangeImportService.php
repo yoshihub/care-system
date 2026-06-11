@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\DB;
  *
  * 【登録時のルール】
  * - source_type = 'csv'（手入力との区別）
- * - process_status = 'pending'（未処理。資格登録は別タスク）
+ * - process_status = 'pending'（未処理。資格登録は別処理で行う）
  * - note 列はCSV上のみで、DBには保存しない
  *
  * 【このクラスがやらないこと】

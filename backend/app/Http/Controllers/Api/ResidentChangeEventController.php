@@ -55,7 +55,7 @@ class ResidentChangeEventController extends Controller
 
     /**
      * 住民異動イベントを手入力で登録する。
-     * 登録直後は未処理（pending）とし、資格登録は別タスクで行う。
+     * 登録直後は未処理（pending）とし、資格登録は別処理で行う。
      */
     public function store(StoreResidentChangeEventRequest $request): JsonResponse
     {

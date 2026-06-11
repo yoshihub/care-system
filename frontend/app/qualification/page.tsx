@@ -11,7 +11,7 @@ import { QUALIFICATION_NAV_ITEMS } from "@/components/layout/nav-items";
 
 /**
  * 被保険者資格ダッシュボード兼メニュー（SCR-DB）。
- * 被保険者資格の業務メニューの枠を表示する。各画面の実装は後続タスク（006以降）。
+ * 被保険者資格の業務メニューを表示する。
  */
 export default function QualificationDashboardPage() {
   return (
@@ -46,7 +46,7 @@ export default function QualificationDashboardPage() {
                       </span>
                     ) : (
                       <span className="inline-flex rounded-full bg-muted px-2 py-0.5 text-xs">
-                        準備中（後続タスクで実装）
+                        準備中
                       </span>
                     )}
                   </CardDescription>

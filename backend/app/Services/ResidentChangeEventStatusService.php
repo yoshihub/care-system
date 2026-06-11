@@ -10,7 +10,7 @@ use InvalidArgumentException;
  *
  * pending / processed / error の切り替えと、
  * processed_at・error_message の保存を担当する。
- * 資格登録の本処理は別タスク（011 など）で行う。
+ * 資格登録の本処理は別の Service で行う。
  */
 class ResidentChangeEventStatusService
 {

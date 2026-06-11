@@ -25,7 +25,7 @@ class InsuredPersonController extends Controller
      * - status (資格状態の完全一致)
      * - insured_no (被保険者番号の部分一致)
      * - resident_no (住民番号の部分一致)
-     * - name (氏名の部分一致。008_01 互換)
+     * - name (氏名の部分一致。一覧API初期版との互換)
      */
     public function index(Request $request): AnonymousResourceCollection
     {
