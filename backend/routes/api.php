@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\InsuredPersonController;
+use App\Http\Controllers\Api\QualificationHistoryController;
 use App\Http\Controllers\Api\ResidentChangeEventController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,9 @@ Route::get('/resident-change-events', [ResidentChangeEventController::class, 'in
 Route::post('/resident-change-events', [ResidentChangeEventController::class, 'store']);
 // 住民異動イベントCSV取込
 Route::post('/resident-change-events/import', [ResidentChangeEventController::class, 'import']);
+
+// 資格登録（住民異動イベントをもとに被保険者・資格履歴を作成/更新）
+Route::post('/qualification-histories', [QualificationHistoryController::class, 'store']);
 
 // 被保険者一覧（資格情報照会・一覧確認）
 Route::get('/insured-persons', [InsuredPersonController::class, 'index']);
