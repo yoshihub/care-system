@@ -35,8 +35,10 @@ SCR-00 大分類ポータル
 ## 共通画面ルール
 - 画面右上または下部に「対応業務」を表示する（機能ID・帳票IDは表示しない）
 - shadcn/uiのTable, Card, Button, Badge, Dialog, Formを利用する
-- 業務エラーは赤色のAlertで表示する
+- 業務エラーは赤色のAlertで表示する（Server Actions の戻り値等）
 - pending/processed/errorなどの状態はBadgeで表示する
+- データ取得中は `loading.tsx` または Suspense fallback でローディングを表示する
+- API 取得失敗（想定外）は `error.tsx` で統一し、再試行できるようにする
 
 ## UI・レイアウト（確定デザイン）
 配色・サイドバー・ポータルカード等の詳細は **`docs/specs/08_ui_design_guide.md`** を正とする。要点のみ:

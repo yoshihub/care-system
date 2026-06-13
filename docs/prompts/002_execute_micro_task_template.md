@@ -7,10 +7,17 @@
 
 必ず以下を読んでください。
 - docs/01_README_FOR_CURSOR.md
-- docs/specs/07_architecture_security.md（BFF層: Server Component / Server Actions / Route Handler の選び方）
+- docs/specs/07_architecture_security.md（BFF層。一覧は RSC + searchParams、フォームは Server Actions がデフォルト）
 - docs/standards/00_standard_version_lock.md
 - docs/tasks_micro/XXXX.md
 - task内の「必ず読む標準仕様抽出ファイル」
+
+フロント実装時のデフォルト:
+- 一覧・検索 → RSC + searchParams + backendFetch（検索フォームは form method="GET"）
+- 登録・更新 → Server Actions + useActionState + backendFetch
+- データ取得 → loading.tsx + Suspense（backendFetch がある segment）
+- 取得失敗 → error.tsx（try/catch + loadError は使わない）
+- Route Handler / Client fetch は例外時のみ
 
 変更ファイル数は最大6ファイルまでにしてください。
 6ファイルを超える場合は実装せず、分割案を提示してください。

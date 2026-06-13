@@ -9,10 +9,10 @@
 ### Next.js BFF層
 - ブラウザは Laravel API を直接呼ばない
 - Next.js のサーバー側が Laravel API を呼ぶ（詳細は `docs/specs/07_architecture_security.md`）
-- 実装方式は用途に応じて次から選ぶ:
-  - **Server Component + `backendFetch`**: ページ表示用 GET
-  - **Server Actions**: フォーム送信など Client Component からの更新処理で簡潔に書ける場合
-  - **Route Handler**（`frontend/app/api/*/route.ts`）: ファイルアップロード、REST エンドポイントとして明示する場合
+- **今後のデフォルト**:
+  - **一覧・詳細・検索**: RSC + `searchParams` + `backendFetch`（検索は `<form method="GET">`）
+  - **登録・更新フォーム**: Server Actions + `useActionState`（`backendFetch` で Laravel 中継）
+  - **Route Handler**: ファイルアップロード、公開 REST エンドポイントが必要な場合のみ
 - いずれも `frontend/lib/backend.ts` の `backendFetch` 経由で Laravel を呼ぶこと
 
 ### Next.js Route Handler 一覧（HTTP エンドポイントとして公開するもの）
@@ -27,8 +27,8 @@
 | GET | /api/insured-persons/{id} | 被保険者詳細 | GET /api/insured-persons/{id} |
 | POST | /api/qualification-histories | 資格登録 | POST /api/qualification-histories |
 
-※ 上記のうち、ページ表示専用の GET は Server Component から `backendFetch` 直呼びしてもよい（Route Handler は必須ではない）。
-※ フォーム送信系 POST は Server Actions で `backendFetch` 中継してもよい（Route Handler は必須ではない）。
+※ ページ表示用 GET は **Server Component + `searchParams` + `backendFetch` 直呼び** をデフォルトとする（Route Handler 不要）。
+※ フォーム送信系 POST は **Server Actions + `backendFetch`** をデフォルトとする（Route Handler 不要）。Route Handler は curl 検証用など既存分のみ残置可。
 
 ## Laravel API一覧
 

@@ -40,6 +40,20 @@ MySQL
 ブラウザから Laravel API を直接呼ばないこと。Next.js BFF 層を経由すること。
 業務ロジックは Laravel に実装し、BFF 層は `backendFetch` で中継する（詳細は `docs/specs/07_architecture_security.md`）。
 
+## フロントエンド実装方針（今後のデフォルト）
+
+| 用途 | 実装 |
+|---|---|
+| 一覧・詳細表示 | RSC + `searchParams` + `backendFetch` |
+| 検索・フィルタ | `<form method="GET">`（Server Component） |
+| 登録・更新 | Server Actions + `useActionState` + `backendFetch` |
+| CSV 等アップロード | Route Handler |
+| データ取得中 | `loading.tsx` + Suspense |
+| 取得失敗（想定外） | `error.tsx`（`reset` で再試行） |
+
+Client から `fetch("/api/...")` する新規実装は避けること。
+`page.tsx` の `try/catch` + `loadError` は新規で使わず、`error.tsx` に統一すること。
+
 ## 標準仕様準拠のルール
 
 - 機能IDだけを根拠に実装してはいけない

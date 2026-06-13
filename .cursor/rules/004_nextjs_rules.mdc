@@ -7,7 +7,12 @@ alwaysApply: true
 
 - `frontend/app` 配下を使用する
 - `frontend/src/app` は使用しない
-- Route Handlerは `frontend/app/api/**/route.ts`
 - shadcn/uiを優先する
-- Laravel API直呼びは禁止
-- BFF fetch helperを使う
+- Laravel API直呼びは禁止（ブラウザから）。サーバー側は backendFetch を使う
+- 一覧・詳細: RSC + searchParams + backendFetch
+- 検索フォーム: Server Component + form method="GET"（Client の router.push 検索は新規で使わない）
+- 登録・更新フォーム: Server Actions + useActionState + backendFetch
+- backendFetch があるルート segment: loading.tsx を置く。必要に応じて Suspense で取得部分を分離
+- backendFetch があるルート segment: error.tsx を置く。page.tsx の try/catch + loadError は新規で使わない（throw + notFound()）
+- Route Handler（`frontend/app/api/**/route.ts`）: CSV アップロード等、Server Actions で扱いにくい場合のみ
+- Client から fetch("/api/...") する新規実装は避ける
