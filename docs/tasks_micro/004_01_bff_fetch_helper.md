@@ -15,6 +15,7 @@ Next.js BFFからLaravel APIを呼ぶ共通fetchヘルパーを作成する。
 ## 今回実装すること
 - Laravel API呼出用helper作成
 - エラーハンドリング最小実装
+- Route Handler / Server Actions / Server Component から共通利用できること
 
 ## 今回実装しないこと
 - 業務Route実装

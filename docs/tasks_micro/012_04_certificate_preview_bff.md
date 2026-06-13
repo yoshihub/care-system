@@ -14,13 +14,18 @@ Next.js BFFで証プレビューを中継する。
 このタスクは上記の標準仕様抽出ファイルに基づいて実装する。機能IDだけを根拠にせず、必ずREQ/FLOW/DATA/REPORTの「今回のPoCで実装する範囲」と「今回実装しない範囲」に従うこと。
 
 ## 今回実装すること
-- frontend/app/api/insured-persons/[id]/certificate-preview/route.ts
+- Laravel `GET /api/insured-persons/{id}/certificate-preview` を Next.js BFF 層から呼び出せるようにする
+- 実装方式は `docs/specs/07_architecture_security.md` に従い、次から選ぶ:
+  - **Route Handler**（`frontend/app/api/insured-persons/[id]/certificate-preview/route.ts`）
+  - プレビュー画面が Server Component のみで完結する場合は **Server Component + `backendFetch` 直呼び**（Route Handler 不要）
 
 ## 今回実装しないこと
 - 画面
 
 ## 触ってよいファイル/ディレクトリ
 - `frontend/app/api/`
+- `frontend/app/`（Server Component 直呼びを選ぶ場合）
+- `frontend/lib/`
 
 ## 触ってはいけないファイル/ディレクトリ
 - `backend/`

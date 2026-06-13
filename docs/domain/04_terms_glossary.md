@@ -12,5 +12,6 @@
 | 再交付 | 紛失・破損などにより証を再発行すること |
 | 住所地特例 | 施設入所などに伴う保険者判定の特例。今回PoCでは対象外 |
 | 適用除外施設 | 介護保険の資格管理に影響する特定施設。今回PoCでは対象外 |
-| BFF | Backend For Frontend。Next.jsがフロント向けAPIとしてLaravel APIを中継する構成 |
+| BFF | Backend For Frontend。Next.js サーバー側（Server Component / Server Actions / Route Handler）が Laravel API を中継する構成 |
+| Server Actions | Next.js のサーバー関数。Client Component からフォーム送信等を簡潔に書ける。業務ロジックは Laravel に置き、`backendFetch` で中継する |
 | PoC | Proof of Concept。検証用デモ |

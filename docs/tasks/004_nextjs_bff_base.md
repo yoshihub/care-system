@@ -1,7 +1,9 @@
 # 004_nextjs_bff_base
 
 ## 位置づけ
-Next.js BFF基盤。実装は tasks_micro/004_*。
+Next.js BFF 基盤。実装は tasks_micro/004_*。
+
+BFF 層の実装方式（Server Component / Server Actions / Route Handler）の選び方は `docs/specs/07_architecture_security.md` を参照すること。
 
 ## 実装方法
 このファイルを直接「全部実装して」と投げないこと。

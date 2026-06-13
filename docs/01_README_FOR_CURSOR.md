@@ -15,7 +15,7 @@ Cursorは実装前に必ず以下を読むこと。
 ## 技術構成
 
 - Frontend: Next.js 16 + TypeScript + Tailwind CSS + shadcn/ui
-- BFF: Next.js Route Handler
+- BFF: Next.js サーバー側（Server Component / Server Actions / Route Handler）
 - Backend: Laravel 13 API
 - DB: MySQL 8
 - Docker: frontend / backend / nginx / mysql
@@ -27,14 +27,18 @@ Browser
   ↓
 Next.js UI
   ↓
-Next.js BFF Route Handler
+Next.js BFF層（サーバー側）
+    ├─ Server Component + backendFetch（表示用 GET）
+    ├─ Server Actions（フォーム送信など簡潔に書ける更新処理）
+    └─ Route Handler（ファイルアップロード、/api/* エンドポイント）
   ↓
 Laravel API
   ↓
 MySQL
 ```
 
-ブラウザからLaravel APIを直接呼ばないこと。Next.js BFFを経由すること。
+ブラウザから Laravel API を直接呼ばないこと。Next.js BFF 層を経由すること。
+業務ロジックは Laravel に実装し、BFF 層は `backendFetch` で中継する（詳細は `docs/specs/07_architecture_security.md`）。
 
 ## 標準仕様準拠のルール
 

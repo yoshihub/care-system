@@ -14,13 +14,18 @@
 このタスクは上記の標準仕様抽出ファイルに基づいて実装する。機能IDだけを根拠にせず、必ずREQ/FLOW/DATA/REPORTの「今回のPoCで実装する範囲」と「今回実装しない範囲」に従うこと。
 
 ## 今回実装すること
-- frontend/app/api/reissue-applications/route.ts
+- Laravel 再交付申請 API を Next.js BFF 層から呼び出せるようにする
+- 実装方式は `docs/specs/07_architecture_security.md` に従い、次から選ぶ:
+  - **Server Actions**（フォーム送信を簡潔に書ける場合。推奨）
+  - **Route Handler**（`frontend/app/api/reissue-applications/route.ts`）
 
 ## 今回実装しないこと
 - 画面
 
 ## 触ってよいファイル/ディレクトリ
 - `frontend/app/api/`
+- `frontend/app/`（Server Actions を選ぶ場合）
+- `frontend/lib/`
 
 ## 触ってはいけないファイル/ディレクトリ
 - `backend/`

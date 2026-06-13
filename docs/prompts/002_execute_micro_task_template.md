@@ -7,6 +7,7 @@
 
 必ず以下を読んでください。
 - docs/01_README_FOR_CURSOR.md
+- docs/specs/07_architecture_security.md（BFF層: Server Component / Server Actions / Route Handler の選び方）
 - docs/standards/00_standard_version_lock.md
 - docs/tasks_micro/XXXX.md
 - task内の「必ず読む標準仕様抽出ファイル」
