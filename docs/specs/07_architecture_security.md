@@ -34,23 +34,30 @@ MySQL 8
 
 ## 今後のフロント実装方針（デフォルト）
 
-新規・改修タスクでは、次を **第一選択** とする。
+**新規画面・今回タスクで触る画面** では、次を第一選択とする。  
+既存画面の一括リファクタは **不要**（当該タスクのスコープ外なら loading/error を追加しない）。
 
-| 用途 | デフォルト | 補足 |
+| 用途 | デフォルト | 適用タイミング |
 |---|---|---|
-| **一覧・詳細の表示** | **RSC + `searchParams` + `backendFetch`** | フィルタ・検索条件は URL（`searchParams`）を状態とする |
-| **検索フォーム** | **`<form method="GET">` の Server Component** | Client の `router.push` + `useState` は使わない |
-| **登録・更新フォーム** | **Server Actions + `useActionState`** | 中身は `backendFetch` で Laravel API を呼ぶだけ |
-| **ファイルアップロード** | Route Handler | CSV 取込など Server Actions で扱いにくいもの |
-| **データ取得中 UI** | **`loading.tsx` + Suspense** | ルート segment に loading、重い取得は async 子コンポーネントを Suspense で包む |
-| **予期しない取得エラー** | **`error.tsx`** | Route Error Boundary。再試行ボタン付き |
+| **一覧・詳細の表示** | **RSC + `searchParams` + `backendFetch`** | 新規・改修時 |
+| **検索フォーム** | **`<form method="GET">` の Server Component** | 新規・改修時 |
+| **登録・更新フォーム** | **Server Actions + `useActionState`** | 新規・改修時 |
+| **ファイルアップロード** | Route Handler | 新規・改修時 |
+| **データ取得中 UI** | **`loading.tsx` + Suspense** | **新規画面は必須**。既存は当該タスクで画面を触るときのみ |
+| **予期しない取得エラー** | **`error.tsx`** | **新規画面は必須**。既存は当該タスクで画面を触るときのみ |
 
 ### 避けるパターン（新規実装）
 
 - Client Component から `fetch("/api/...")` で Laravel を間接呼び出し
 - 検索 UI を Client の `useState` + `router.push` のみで実装
 - Route Handler をフォーム送信のために安易に追加（Server Actions で足りる場合）
-- `page.tsx` 内の `try/catch` + `loadError` 文字列（**`error.tsx` に統一**する。既存画面の改修時に置き換える）
+- `page.tsx` 内の `try/catch` + `loadError` 文字列（**新規画面では使わない**）
+
+### 既存画面の扱い（loading / error）
+
+- **012 以降の新規画面**: `loading.tsx` + Suspense + `error.tsx` を最初から入れる
+- **011 までの既存画面**: すでに対応済みのものがある（被保険者一覧・詳細、住民異動、資格登録）。**タスクで触らない画面は改修しない**
+- 既存画面を改修するタスクでは、当該ルート segment に loading/error がなければ **その画面だけ** 追加する
 
 ### 例外（Route Handler を使う）
 
@@ -72,19 +79,23 @@ MySQL 8
 
 ### loading.tsx + Suspense の実装ルール
 
-- `backendFetch` があるルート segment には **`loading.tsx` を置く**（新規画面は必須、既存改修時も追加）
-- パンくず・見出しなど固定 UI と、一覧テーブルなど取得待ち UI を分けたい場合:
-  - `page.tsx` … 骨組み（ヘッダー・検索フォーム等）
+- **新規画面**（`backendFetch` があるルート）では **必須**
+- 構成:
+  - `page.tsx` … 骨組み（パンくず・見出し・検索フォーム等）
   - async 子コンポーネント … `backendFetch` でデータ取得
-  - `<Suspense fallback={...}>` で子を包む（または segment の `loading.tsx` に任せる）
-- ローディング表示は Card / スケルトン等、既存画面のトーンに合わせる
+  - `<Suspense fallback={...}>` で子を包む
+  - 同 segment に `loading.tsx`（画面遷移時のフォールバック）
+- 共通スケルトン: `components/ui/list-card-skeleton.tsx`、`detail-content-skeleton.tsx`
+- 参考: `components/insured-person/insured-persons-list-section.tsx`、`app/qualification/insured-persons/page.tsx`
 
 ### error.tsx の実装ルール
 
-- `backendFetch` があるルート segment には **`error.tsx` を置く**（Client Component。`reset` で再試行）
-- データ取得側は **`try/catch` で握りつぶさず throw する**（`BackendApiError` 含む）。404 など想定内は `notFound()` を使う
-- 業務エラー（422 バリデーション等）は Server Actions の戻り値で UI 表示（error.tsx の対象外）
-- `error.tsx` と `try/catch` + `loadError` を **同一画面で併用しない**
+- **新規画面**（`backendFetch` があるルート）では **必須**
+- 同 segment に `error.tsx`（Client Component、`reset` で再試行）
+- データ取得は **throw**（404 は `rethrowBackendError` / `notFound()`）
+- 業務エラー（422 等）は Server Actions の戻り値（error.tsx 対象外）
+- 共通 UI: `components/layout/route-error.tsx`
+- 参考: `app/qualification/insured-persons/error.tsx`
 
 ### Route Handler を使う目安
 

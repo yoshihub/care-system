@@ -14,11 +14,13 @@ alwaysApply: true
 ブラウザからLaravel APIを直接呼ばない。
 Next.js BFF層を経由すること（`frontend/lib/backend.ts` の backendFetch）。
 
-フロント実装のデフォルト:
+フロント実装のデフォルト（新規画面・今回タスクで触る画面）:
 - 一覧・詳細・検索: RSC + searchParams + backendFetch
 - 登録・更新フォーム: Server Actions + useActionState
-- データ取得中: loading.tsx + Suspense
-- 取得失敗（想定外）: error.tsx
+- データ取得中: loading.tsx + Suspense（新規画面は必須）
+- 取得失敗: error.tsx（新規画面は必須）
 - Route Handler: ファイルアップロード等の例外のみ
+
+既存画面の loading/error 一括リファクタは不要。当該タスクで触る画面だけ適用する。
 
 業務ロジックは Laravel に実装する。

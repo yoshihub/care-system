@@ -12,11 +12,12 @@
 - docs/tasks_micro/XXXX.md
 - task内の「必ず読む標準仕様抽出ファイル」
 
-フロント実装時のデフォルト:
+フロント実装時のデフォルト（新規画面・今回触る画面のみ）:
 - 一覧・検索 → RSC + searchParams + backendFetch（検索フォームは form method="GET"）
 - 登録・更新 → Server Actions + useActionState + backendFetch
-- データ取得 → loading.tsx + Suspense（backendFetch がある segment）
-- 取得失敗 → error.tsx（try/catch + loadError は使わない）
+- データ取得 → loading.tsx + Suspense + async 子コンポーネント（新規画面は必須）
+- 取得失敗 → error.tsx + throw（try/catch + loadError は新規で使わない）
+- 既存画面の一括リファクタは不要。タスク外の画面は触らない
 - Route Handler / Client fetch は例外時のみ
 
 変更ファイル数は最大6ファイルまでにしてください。

@@ -12,7 +12,8 @@ alwaysApply: true
 - 一覧・詳細: RSC + searchParams + backendFetch
 - 検索フォーム: Server Component + form method="GET"（Client の router.push 検索は新規で使わない）
 - 登録・更新フォーム: Server Actions + useActionState + backendFetch
-- backendFetch があるルート segment: loading.tsx を置く。必要に応じて Suspense で取得部分を分離
-- backendFetch があるルート segment: error.tsx を置く。page.tsx の try/catch + loadError は新規で使わない（throw + notFound()）
+- 新規画面（backendFetch あり）: loading.tsx + Suspense（async 子コンポーネント）+ error.tsx をセットで入れる
+- 既存画面: 当該タスクで触る場合のみ loading/error を追加。一括リファクタしない
+- page.tsx の try/catch + loadError は新規画面で使わない（throw + error.tsx）
 - Route Handler（`frontend/app/api/**/route.ts`）: CSV アップロード等、Server Actions で扱いにくい場合のみ
 - Client から fetch("/api/...") する新規実装は避ける

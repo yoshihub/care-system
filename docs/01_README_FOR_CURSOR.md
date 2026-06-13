@@ -42,17 +42,19 @@ MySQL
 
 ## フロントエンド実装方針（今後のデフォルト）
 
+**新規画面・今回タスクで触る画面** に適用する。既存画面の一括リファクタは不要。
+
 | 用途 | 実装 |
 |---|---|
 | 一覧・詳細表示 | RSC + `searchParams` + `backendFetch` |
 | 検索・フィルタ | `<form method="GET">`（Server Component） |
 | 登録・更新 | Server Actions + `useActionState` + `backendFetch` |
 | CSV 等アップロード | Route Handler |
-| データ取得中 | `loading.tsx` + Suspense |
-| 取得失敗（想定外） | `error.tsx`（`reset` で再試行） |
+| データ取得中 | `loading.tsx` + Suspense（**新規画面は必須**） |
+| 取得失敗（想定外） | `error.tsx`（**新規画面は必須**） |
 
-Client から `fetch("/api/...")` する新規実装は避けること。
-`page.tsx` の `try/catch` + `loadError` は新規で使わず、`error.tsx` に統一すること。
+Client から `fetch("/api/...")` する新規実装は避けること。  
+`page.tsx` の `try/catch` + `loadError` は新規画面では使わないこと。
 
 ## 標準仕様準拠のルール
 

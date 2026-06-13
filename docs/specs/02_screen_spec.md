@@ -37,8 +37,8 @@ SCR-00 大分類ポータル
 - shadcn/uiのTable, Card, Button, Badge, Dialog, Formを利用する
 - 業務エラーは赤色のAlertで表示する（Server Actions の戻り値等）
 - pending/processed/errorなどの状態はBadgeで表示する
-- データ取得中は `loading.tsx` または Suspense fallback でローディングを表示する
-- API 取得失敗（想定外）は `error.tsx` で統一し、再試行できるようにする
+- **新規画面**ではデータ取得中に `loading.tsx` / Suspense、想定外エラーに `error.tsx` を使う
+- 既存画面は当該タスクで触る場合のみ loading/error を追加する（一括改修しない）
 
 ## UI・レイアウト（確定デザイン）
 配色・サイドバー・ポータルカード等の詳細は **`docs/specs/08_ui_design_guide.md`** を正とする。要点のみ:
