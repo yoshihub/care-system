@@ -1,7 +1,4 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import Link from "next/link";
 import { Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,49 +18,10 @@ type InsuredPersonSearchFormProps = {
 const inputClassName =
   "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
 
-/** 被保険者一覧の検索フォーム */
+/** 被保険者一覧の検索フォーム（GET + searchParams） */
 export function InsuredPersonSearchForm({
   defaultValues,
 }: InsuredPersonSearchFormProps) {
-  const router = useRouter();
-  const [q, setQ] = useState(defaultValues.q ?? "");
-  const [status, setStatus] = useState(defaultValues.status ?? "");
-  const [insuredNo, setInsuredNo] = useState(defaultValues.insured_no ?? "");
-  const [residentNo, setResidentNo] = useState(defaultValues.resident_no ?? "");
-
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-
-    const params = new URLSearchParams();
-    const entries: [string, string][] = [
-      ["q", q.trim()],
-      ["status", status],
-      ["insured_no", insuredNo.trim()],
-      ["resident_no", residentNo.trim()],
-    ];
-
-    for (const [key, value] of entries) {
-      if (value !== "") {
-        params.set(key, value);
-      }
-    }
-
-    const query = params.toString();
-    router.push(
-      query.length > 0
-        ? `/qualification/insured-persons?${query}`
-        : "/qualification/insured-persons"
-    );
-  };
-
-  const handleClear = () => {
-    setQ("");
-    setStatus("");
-    setInsuredNo("");
-    setResidentNo("");
-    router.push("/qualification/insured-persons");
-  };
-
   return (
     <Card className="mb-6 border-border/60 shadow-sm">
       <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
@@ -77,15 +35,16 @@ export function InsuredPersonSearchForm({
       </CardHeader>
       <CardContent className="px-6 py-4">
         <form
+          method="GET"
+          action="/qualification/insured-persons"
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-          onSubmit={handleSubmit}
         >
           <label className="space-y-1.5">
             <span className="text-sm font-medium text-foreground">キーワード</span>
             <input
               type="search"
-              value={q}
-              onChange={(event) => setQ(event.target.value)}
+              name="q"
+              defaultValue={defaultValues.q ?? ""}
               placeholder="氏名・カナ・番号"
               className={inputClassName}
             />
@@ -94,8 +53,8 @@ export function InsuredPersonSearchForm({
           <label className="space-y-1.5">
             <span className="text-sm font-medium text-foreground">資格状態</span>
             <select
-              value={status}
-              onChange={(event) => setStatus(event.target.value)}
+              name="status"
+              defaultValue={defaultValues.status ?? ""}
               className={inputClassName}
             >
               <option value="">すべて</option>
@@ -108,8 +67,8 @@ export function InsuredPersonSearchForm({
             <span className="text-sm font-medium text-foreground">被保険者番号</span>
             <input
               type="text"
-              value={insuredNo}
-              onChange={(event) => setInsuredNo(event.target.value)}
+              name="insured_no"
+              defaultValue={defaultValues.insured_no ?? ""}
               placeholder="部分一致"
               className={inputClassName}
             />
@@ -119,8 +78,8 @@ export function InsuredPersonSearchForm({
             <span className="text-sm font-medium text-foreground">住民番号</span>
             <input
               type="text"
-              value={residentNo}
-              onChange={(event) => setResidentNo(event.target.value)}
+              name="resident_no"
+              defaultValue={defaultValues.resident_no ?? ""}
               placeholder="部分一致"
               className={inputClassName}
             />
@@ -128,8 +87,8 @@ export function InsuredPersonSearchForm({
 
           <div className="flex items-end gap-2 sm:col-span-2 lg:col-span-4">
             <Button type="submit">検索</Button>
-            <Button type="button" variant="outline" onClick={handleClear}>
-              クリア
+            <Button asChild variant="outline">
+              <Link href="/qualification/insured-persons">クリア</Link>
             </Button>
           </div>
         </form>
