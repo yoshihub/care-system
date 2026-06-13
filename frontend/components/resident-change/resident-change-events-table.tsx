@@ -1,3 +1,7 @@
+import Link from "next/link";
+
+import { ProcessStatusBadge } from "@/components/resident-change/process-status-badge";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -6,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ProcessStatusBadge } from "@/components/resident-change/process-status-badge";
 import { cn } from "@/lib/utils";
 
 export type ResidentChangeEventRow = {
@@ -69,6 +72,7 @@ export function ResidentChangeEventsTable({
           <TableHead className={cn("h-11", cellPad)}>氏名</TableHead>
           <TableHead className={cn("h-11", cellPad)}>住民番号</TableHead>
           <TableHead className={cn("h-11", cellPad)}>取込元</TableHead>
+          <TableHead className={cn("h-11 text-right", cellPad)}>操作</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -104,6 +108,19 @@ export function ResidentChangeEventsTable({
             </TableCell>
             <TableCell className={cn("py-3.5 text-foreground", cellPad)}>
               {SOURCE_LABELS[event.source_type] ?? event.source_type}
+            </TableCell>
+            <TableCell className={cn("py-3.5 text-right", cellPad)}>
+              {event.process_status === "pending" ? (
+                <Button asChild size="sm" className="cursor-pointer">
+                  <Link
+                    href={`/qualification/resident-change-events/${event.id}/register`}
+                  >
+                    資格登録
+                  </Link>
+                </Button>
+              ) : (
+                <span className="text-sm text-muted-foreground">—</span>
+              )}
             </TableCell>
           </TableRow>
         ))}
