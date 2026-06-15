@@ -4,7 +4,7 @@
  * 資格登録フォーム (Client Component)。
  *
  * このファイルは何か:
- *   SCR-04 の登録フォームと、登録成功後の結果表示 UI。
+ *   資格登録画面の登録フォームと、登録成功後の結果表示 UI。
  *   useActionState + registerQualificationAction で Server Action を呼び出す。
  *
  * どう使われるか:

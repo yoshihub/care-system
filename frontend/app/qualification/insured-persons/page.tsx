@@ -30,7 +30,7 @@ type PageSearchParams = {
 const SEARCH_KEYS = ["q", "status", "insured_no", "resident_no"] as const;
 
 /**
- * 被保険者一覧画面 (SCR-02)。
+ * 被保険者一覧画面。
  *
  * このファイルは何か:
  *   登録済み被保険者を検索・一覧表示する RSC ページ。

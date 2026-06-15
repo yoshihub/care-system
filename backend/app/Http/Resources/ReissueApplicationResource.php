@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *   - フロントの「再交付申請」タブがテーブル表示する。
  *
  * 設計メモ:
- *   - PoC では参照のみ。申請登録 API は未実装 (FLOW-02-02 以降)。
+ *   - PoC では参照のみ。申請登録 API は未実装 (再交付業務の実装以降)。
  *   - reissued_issue_history_id で再発行結果の証履歴と紐づけ可能。
  *
  * @mixin ReissueApplication

@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  * 資格登録 対象イベント概要 Card (Server Component)。
  *
  * このファイルは何か:
- *   SCR-04 上部に表示する、登録対象の住民異動イベントの読み取り専用サマリー。
+ *   資格登録画面上部に表示する、登録対象の住民異動イベントの読み取り専用サマリー。
  *   QualificationRegisterEvent 型 (一覧 API の 1 行 + 住所詳細) を export する。
  *
  * どう使われるか:

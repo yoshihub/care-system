@@ -11,7 +11,7 @@
  *
  * 設計メモ:
  *   - 対象外業務 (賦課・収納・認定・給付など) も表示するが、リンクは無効 (active: false)。
- *   - 詳細仕様は docs/standards/03_business_categories.md を参照。
+ *   - 大分類の定義・説明文は画面仕様書と整合させる。
  */
 export type BusinessCategory = {
   /** 内部識別子 */

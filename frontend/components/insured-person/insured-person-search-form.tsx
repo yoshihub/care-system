@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
  * 被保険者一覧 検索フォーム (Server Component)。
  *
  * このファイルは何か:
- *   被保険者一覧 (SCR-02) 上部の検索 UI。キーワード・資格状態・番号で絞り込む。
+ *   被保険者一覧画面上部の検索 UI。キーワード・資格状態・番号で絞り込む。
  *
  * どう使われるか:
  *   - insured-persons/page.tsx から defaultValues (searchParams) を受け取り描画する。

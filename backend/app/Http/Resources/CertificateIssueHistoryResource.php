@@ -18,7 +18,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *   - フロントの「証発行履歴」タブがテーブル表示する。
  *
  * 設計メモ:
- *   - PoC では参照のみ。登録・PDF 生成 API は未実装 (FLOW-02-02 以降)。
+ *   - PoC では参照のみ。登録・PDF 生成 API は未実装 (再交付業務の実装以降)。
  *   - is_latest で現在有効な証を識別する。
  *
  * @mixin CertificateIssueHistory

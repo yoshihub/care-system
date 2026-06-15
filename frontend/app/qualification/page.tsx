@@ -10,7 +10,7 @@ import {
 import { QUALIFICATION_NAV_ITEMS } from "@/components/layout/nav-items";
 
 /**
- * 被保険者資格ダッシュボード (SCR-DB)。
+ * 被保険者資格ダッシュボード。
  *
  * このファイルは何か:
  *   /qualification のトップ画面。被保険者資格業務 (住民異動・被保険者一覧など)

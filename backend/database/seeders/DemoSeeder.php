@@ -38,7 +38,7 @@ class DemoSeeder extends Seeder
 
     /**
      * シナリオA: これから資格登録する「未処理の住民異動イベント」。
-     * この時点では被保険者はまだ作らない (資格登録タスクで作る)。
+     * この時点では被保険者はまだ作らない (資格登録処理で作る)。
      */
     private function seedScenarioAPendingEvents(): void
     {

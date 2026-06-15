@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  *
  * どう使われるか:
  *   - DemoSeeder が主役被保険者に受付済 (received) の再交付申請を1件作成する。
- *   - 再交付フロー (FLOW-02-02) 実装時のテストデータとして利用する。
+ *   - 再交付申請・再発行の実装時のテストデータとして利用する。
  *
  * 設計メモ:
  *   - 親 insured_person_id 未指定時は InsuredPerson を自動作成する。

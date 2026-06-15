@@ -19,6 +19,7 @@
 - 取得失敗 → error.tsx + throw（try/catch + loadError は新規で使わない）
 - 既存画面の一括リファクタは不要。タスク外の画面は触らない
 - Route Handler / Client fetch は例外時のみ
+- ソースコードのコメントは 007_source_code_comments.mdc に従う（タスク番号・REQ/REPORT/FLOW/SCR ID はコメントに書かない）
 
 変更ファイル数は最大6ファイルまでにしてください。
 6ファイルを超える場合は実装せず、分割案を提示してください。
