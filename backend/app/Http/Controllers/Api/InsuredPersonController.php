@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\InsuredPersonDetailResource;
 use App\Http\Resources\InsuredPersonResource;
 use App\Models\InsuredPerson;
+use App\Services\CertificatePreviewDataService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -21,6 +22,7 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
  *   - Next.js BFF 経由でフロントの被保険者検索・詳細画面から呼ばれる。
  *   - index: キーワード・状態・番号などで絞り込み一覧を返す。
  *   - show: 基本情報に加え、資格履歴・証発行履歴・再交付申請を eager load して返す。
+ *   - certificatePreview: 被保険者証の HTML プレビューと発行可否情報を返す。
  *
  * 設計メモ:
  *   - レスポンス整形は InsuredPersonResource / InsuredPersonDetailResource に委譲する。
@@ -110,5 +112,40 @@ class InsuredPersonController extends Controller
 
         return (new InsuredPersonDetailResource($person))
             ->additional(['meta' => ['message' => 'ok']]);
+    }
+
+    /**
+     * 被保険者証 HTML プレビュー。
+     *
+     * 印字データ・発行可否・レンダリング済み HTML を JSON で返す。
+     * 発行不可 (認定申請中等) でもプレビュー HTML は返し、可否は issue_eligibility で示す。
+     */
+    public function certificatePreview(
+        string $id,
+        CertificatePreviewDataService $previewService,
+    ): JsonResponse {
+        $person = InsuredPerson::query()->find($id);
+
+        if ($person === null) {
+            return response()->json([
+                'message' => '被保険者が見つかりません。',
+            ], 404);
+        }
+
+        $preview = $previewService->build($person);
+
+        $html = view('certificates.insured-certificate', [
+            'certificate' => $preview['certificate'],
+        ])->render();
+
+        return response()->json([
+            'data' => [
+                'insured_person_id' => $person->id,
+                'issue_eligibility' => $preview['issue_eligibility'],
+                'certificate' => $preview['certificate'],
+                'html' => $html,
+            ],
+            'meta' => ['message' => 'ok'],
+        ]);
     }
 }

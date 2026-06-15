@@ -51,3 +51,5 @@ Route::post('/qualification-histories', [QualificationHistoryController::class, 
 Route::get('/insured-persons', [InsuredPersonController::class, 'index']);
 // 被保険者詳細 (基本情報・各種履歴)
 Route::get('/insured-persons/{id}', [InsuredPersonController::class, 'show']);
+// 被保険者証 HTML プレビュー (印字データ・発行可否・html)
+Route::get('/insured-persons/{id}/certificate-preview', [InsuredPersonController::class, 'certificatePreview']);
