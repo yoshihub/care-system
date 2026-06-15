@@ -8,11 +8,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * 住民異動イベント。
+ * 住民異動イベント Eloquent モデル (resident_change_events)。
  *
- * 住民記録側で起きた異動 (65歳到達・転入・転出・死亡・住所変更・氏名変更) を、
- * CSV取込または手入力で受け取って溜めておく「未処理の異動メモ」を表す。
- * このレコードを資格登録処理にかけることで、被保険者や資格履歴が作られる。
+ * このファイルは何か:
+ *   住民記録側で起きた異動 (65歳到達・転入・転出・死亡・住所変更・氏名変更) を、
+ *   介護保険システムが「これから処理する予定の出来事」として受け取り溜める入口テーブルへの
+ *   ORM マッピング。
+ *
+ * どう使われるか:
+ *   - CSV 取込 (ResidentChangeImportService) または手入力 API でレコードが作られる。
+ *   - 一覧画面で未処理 (pending) を確認し、資格登録 (QualificationRegistrationService) に進む。
+ *   - 処理完了後は process_status を processed に更新し、二重処理を防ぐ。
+ *
+ * 設計メモ:
+ *   - 登録時点の氏名・住所をスナップショットとして保持する (あとから住民票が変わっても不変)。
+ *   - ここにレコードがあるだけでは被保険者は作られない。資格登録が実体化のトリガー。
  */
 #[Fillable([
     'event_uid',

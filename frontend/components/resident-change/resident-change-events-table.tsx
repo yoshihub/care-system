@@ -12,6 +12,21 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+/**
+ * 住民異動イベント一覧テーブル (Server Component)。
+ *
+ * このファイルは何か:
+ *   住民異動イベント一覧 (SCR-01) の表 UI。処理状態・異動種別・取込元と
+ *   未処理行への「資格登録」リンクを表示する。
+ *
+ * どう使われるか:
+ *   - resident-change-events/page.tsx が backendFetch で取得した events を渡す。
+ *   - process_status === "pending" の行のみ資格登録ボタンを活性化する。
+ *
+ * 設計メモ:
+ *   - ResidentChangeEventRow 型は page.tsx 側でも API レスポンス型として import される。
+ */
+
 export type ResidentChangeEventRow = {
   id: number;
   event_uid: string;

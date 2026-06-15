@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 住民異動イベント一覧用のJSON表現。
+ * 住民異動イベント API レスポンス整形 (ResidentChangeEventResource)。
+ *
+ * このファイルは何か:
+ *   ResidentChangeEvent モデルを JSON に変換する Laravel API Resource。
+ *   異動内容・処理状態・スナップショット住所などを返す。
+ *
+ * どう使われるか:
+ *   - GET /api/resident-change-events (一覧)、資格登録 API レスポンス内の event 等で利用。
+ *   - フロントの住民異動一覧・資格登録画面が表示に使う。
+ *
+ * 設計メモ:
+ *   - 日付は YYYY-MM-DD、日時は ISO 8601 文字列に統一する。
+ *   - process_status (pending / processed) をそのまま返し、画面側でバッジ表示する。
  *
  * @mixin ResidentChangeEvent
  */

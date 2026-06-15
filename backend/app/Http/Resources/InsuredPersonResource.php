@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 被保険者一覧用のJSON表現。
+ * 被保険者一覧 API レスポンス整形 (InsuredPersonResource)。
+ *
+ * このファイルは何か:
+ *   InsuredPerson モデルを JSON に変換する Laravel API Resource。
+ *   一覧・検索向けの簡易表現 (基本属性 + 最新資格状態) を返す。
+ *
+ * どう使われるか:
+ *   - GET /api/insured-persons の index レスポンス各要素として利用される。
+ *   - フロントの被保険者一覧画面 (RSC) が BFF 経由で受け取る。
+ *
+ * 設計メモ:
+ *   - 詳細画面向けのネスト構造は InsuredPersonDetailResource に委譲する。
+ *   - 日付は YYYY-MM-DD 文字列に統一する。
  *
  * @mixin InsuredPerson
  */

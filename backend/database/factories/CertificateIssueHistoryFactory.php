@@ -7,10 +7,19 @@ use App\Models\InsuredPerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * 証発行履歴のテスト/Seeder用ダミーデータ生成。
+ * 証発行履歴 Factory (CertificateIssueHistoryFactory)。
  *
- * 既定では「被保険者証を新規交付・発行済・最新 (is_latest=true)」の履歴を作る。
- * 親の被保険者が指定されなければ新たに1人作る。再交付分は state で切り替える。
+ * このファイルは何か:
+ *   CertificateIssueHistory モデル向けのテスト/Seeder 用ダミーデータ生成器。
+ *   証種別・発行理由・発行日等をランダムに埋める。
+ *
+ * どう使われるか:
+ *   - DemoSeeder が被保険者に発行済み被保険者証 (is_latest=true) を付与する。
+ *   - 被保険者詳細の証発行履歴タブ表示を確認する。
+ *
+ * 設計メモ:
+ *   - 親 insured_person_id 未指定時は InsuredPerson を自動作成する。
+ *   - issued / reissued 等の state で application_type_code を切り替える。
  *
  * @extends Factory<CertificateIssueHistory>
  */

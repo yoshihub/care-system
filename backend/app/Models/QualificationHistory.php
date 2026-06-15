@@ -9,10 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 資格履歴。
+ * 資格履歴 Eloquent モデル (qualification_histories)。
  *
- * 被保険者の介護保険資格がどう変わってきたか (取得・変更・喪失・取消・回復) を
- * 時系列で1行ずつ残す履歴。被保険者ごとに、いま効いている1行を is_latest=true で表す。
+ * このファイルは何か:
+ *   被保険者の介護保険資格がどう変わってきたか (取得・変更・喪失・取消・回復) を
+ *   時系列で1行ずつ残す履歴テーブルへの ORM マッピング。
+ *
+ * どう使われるか:
+ *   - 資格登録 API (QualificationRegistrationService) が change_type ごとに1行追加する。
+ *   - 被保険者詳細画面で履歴一覧として表示する。
+ *   - 被保険者ごとに is_latest=true の1行が「いま効いている資格」を表す。
+ *
+ * 設計メモ:
+ *   - source_event_id で起点となった住民異動イベントを辿れる (監査・トレース用)。
+ *   - 被保険者本体 (InsuredPerson) の最新状態と履歴行はセットで更新される。
  */
 #[Fillable([
     'insured_person_id',

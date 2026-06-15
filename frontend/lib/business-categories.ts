@@ -1,7 +1,17 @@
 /**
- * 介護保険システムの9大分類（出典: 標準仕様書 第6.0版 別紙1 業務フロー）。
- * トップページのポータルで表示する。今回のデモ対象は「被保険者資格」のみ。
- * 詳細は docs/standards/03_business_categories.md を参照。
+ * 介護保険システム 9 大分類のポータル定義。
+ *
+ * このファイルは何か:
+ *   標準仕様書 第6.0版 別紙1「業務フロー」に沿った業務大分類の一覧。
+ *   トップページ (/) のカード表示用データを静的に保持する。
+ *
+ * どう使われるか:
+ *   - ルート page.tsx が BUSINESS_CATEGORIES を map し、各業務への入口カードを描画する。
+ *   - active: true の項目だけリンク付きで遷移可能。今回 PoC では「被保険者資格」のみ活性。
+ *
+ * 設計メモ:
+ *   - 対象外業務 (賦課・収納・認定・給付など) も表示するが、リンクは無効 (active: false)。
+ *   - 詳細仕様は docs/standards/03_business_categories.md を参照。
  */
 export type BusinessCategory = {
   /** 内部識別子 */
@@ -16,6 +26,7 @@ export type BusinessCategory = {
   href?: string;
 };
 
+/** 9 大分類の表示データ (トップポータル用) */
 export const BUSINESS_CATEGORIES: BusinessCategory[] = [
   {
     key: "qualification",

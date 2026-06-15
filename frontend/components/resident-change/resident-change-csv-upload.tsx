@@ -1,5 +1,22 @@
 "use client";
 
+/**
+ * 住民異動イベント CSV 取込フォーム (Client Component)。
+ *
+ * このファイルは何か:
+ *   SCR-01 上部の CSV アップロード UI。ファイル選択と取込結果 (成功件数・
+ *   行エラー) の表示を担当する。
+ *
+ * どう使われるか:
+ *   - resident-change-events/page.tsx (RSC) に埋め込まれる。
+ *   - fetch("/api/resident-change-events/import") で BFF → Laravel 取込 API を呼ぶ。
+ *   - 成功時 router.refresh() で親 RSC の一覧を再取得する。
+ *
+ * 設計メモ:
+ *   - multipart は Server Action より Route Handler 向きのため Client fetch を使用。
+ *   - 422 相当の取込エラーは body.data に row_errors 等が入る前提で表示する。
+ */
+
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { Upload } from "lucide-react";
@@ -55,6 +72,7 @@ export function ResidentChangeCsvUpload() {
     const formData = new FormData();
     formData.append("file", file);
 
+    // ---- BFF 経由 CSV 取込 ----
     try {
       const response = await fetch("/api/resident-change-events/import", {
         method: "POST",

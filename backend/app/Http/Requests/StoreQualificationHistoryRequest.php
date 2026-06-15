@@ -7,10 +7,20 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
- * 資格登録リクエスト。
+ * 資格登録リクエストの入力検証。
  *
- * 住民異動イベントをもとに qualification_histories を登録する際の入力検証。
- * 業務ロジック本体は資格登録 Service 側で行う。
+ * このファイルは何か:
+ *   POST /api/qualification-histories で受け取る資格登録パラメータの
+ *   形式チェックと、異動区分ごとの追加ルール検証を担う FormRequest。
+ *
+ * どう使われるか:
+ *   - QualificationHistoryController::store の冒頭で自動的に検証される。
+ *   - 通過した値だけが QualificationRegistrationService::register に渡る。
+ *
+ * 設計メモ:
+ *   - 業務ロジック本体 (被保険者の作成・イベントの処理済み更新など) は Service 側。
+ *   - ACQUIRE / LOSE では開始日・終了日・事由コードの必須条件が異なるため、
+ *     withValidator で区分別の追加検証を行う。
  */
 class StoreQualificationHistoryRequest extends FormRequest
 {
@@ -52,6 +62,7 @@ class StoreQualificationHistoryRequest extends FormRequest
         $validator->after(function (Validator $validator): void {
             $data = $validator->getData();
 
+            // 開始日・終了日の前後関係
             $start = $data['qualification_start_date'] ?? null;
             $end = $data['qualification_end_date'] ?? null;
 
@@ -64,6 +75,7 @@ class StoreQualificationHistoryRequest extends FormRequest
 
             $changeType = $data['change_type'] ?? null;
 
+            // 区分ごとの必須項目 (Laravel の rules だけでは表現しにくい条件)
             if ($changeType === 'ACQUIRE' && empty($data['qualification_start_date'])) {
                 $validator->errors()->add(
                     'qualification_start_date',

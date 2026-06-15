@@ -6,25 +6,21 @@ use App\Models\ResidentChangeEvent;
 use Illuminate\Support\Facades\DB;
 
 /**
- * 住民異動イベントCSVの「取込実行」クラス。
+ * 住民異動イベント CSV の取込実行。
  *
- * 【このクラスの役割】
- * CSV文字列を受け取り、検証を通った行を resident_change_events テーブルに登録する。
+ * このファイルは何か:
+ *   CSV 文字列をパースし、検証を通過した行を resident_change_events へ
+ *   一括登録するサービス。手入力登録とは source_type='csv' で区別する。
  *
- * 【処理の流れ】
- * 1. CSV文字列をパース（ヘッダ + データ行に分割）
- * 2. ResidentChangeCsvValidationService で中身チェック
- * 3. エラーがあれば登録せず、エラー内容を返す
- * 4. 問題なければ全行をDBに登録（途中で失敗したら全部ロールバック）
+ * どう使われるか:
+ *   - ResidentChangeEventController::import から import() が呼ばれる。
+ *   - 検証エラー時は 1 件も登録せず、エラー内容だけ返す。
+ *   - 登録直後のイベントはすべて pending (未処理)。資格登録は別処理。
  *
- * 【登録時のルール】
- * - source_type = 'csv'（手入力との区別）
- * - process_status = 'pending'（未処理。資格登録は別処理で行う）
- * - note 列はCSV上のみで、DBには保存しない
- *
- * 【このクラスがやらないこと】
- * - 資格登録（被保険者の作成・更新）
- * - 画面表示
+ * 設計メモ:
+ *   - 検証ロジックは ResidentChangeCsvValidationService に委譲する。
+ *   - DB 登録はトランザクション内で行い、途中失敗時は全行ロールバックする。
+ *   - 資格登録 (被保険者の作成・更新) はこのクラスでは行わない。
  */
 class ResidentChangeImportService
 {

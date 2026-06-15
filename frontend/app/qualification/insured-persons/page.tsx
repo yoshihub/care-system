@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/card";
 import { backendFetch } from "@/lib/backend";
 
+// ---- 型定義 -------------------------------------------------
+
 type InsuredPersonsApiResponse = {
   data: InsuredPersonRow[];
   meta: { message: string };
@@ -28,8 +30,20 @@ type PageSearchParams = {
 const SEARCH_KEYS = ["q", "status", "insured_no", "resident_no"] as const;
 
 /**
- * 被保険者一覧（SCR-02）。
- * Laravel API を BFF と同じ経路（backendFetch）で取得して表示する。
+ * 被保険者一覧画面 (SCR-02)。
+ *
+ * このファイルは何か:
+ *   登録済み被保険者を検索・一覧表示する RSC ページ。
+ *   検索条件は URL の searchParams で受け取り、Laravel API へクエリとして渡す。
+ *
+ * どう使われるか:
+ *   - サイドバー「被保険者一覧」または詳細画面のパンくずから遷移する。
+ *   - InsuredPersonSearchForm (GET) が searchParams を更新し、本 page が再レンダーされる。
+ *   - 氏名リンクから /qualification/insured-persons/[id] 詳細へ進む。
+ *
+ * 設計メモ:
+ *   - backendFetch で Laravel GET /api/insured-persons を直接呼ぶ (Route Handler 経由ではない)。
+ *   - 取得失敗時は try/catch で loadError を表示 (既存画面のため error.tsx は未導入)。
  */
 export default async function InsuredPersonsPage({
   searchParams,
@@ -46,6 +60,8 @@ export default async function InsuredPersonsPage({
     }
   }
 
+  // ---- データ取得 -------------------------------------------------
+
   let persons: InsuredPersonRow[] = [];
   let loadError: string | null = null;
 
@@ -58,6 +74,8 @@ export default async function InsuredPersonsPage({
   } catch {
     loadError = "一覧の取得に失敗しました。しばらくしてから再度お試しください。";
   }
+
+  // ---- 画面 -------------------------------------------------
 
   return (
     <div className="mx-auto w-full max-w-5xl -mt-1">
@@ -86,8 +104,10 @@ export default async function InsuredPersonsPage({
         </div>
       </header>
 
+      {/* 検索フォーム (GET → searchParams 更新) */}
       <InsuredPersonSearchForm defaultValues={params} />
 
+      {/* 一覧テーブル */}
       <Card className="overflow-hidden border-border/60 shadow-sm">
         <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
           <div className="flex items-center justify-between gap-4">

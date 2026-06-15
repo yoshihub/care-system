@@ -6,7 +6,19 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * 住民異動イベントの手入力登録リクエスト。
+ * 住民異動イベント手入力登録の入力検証。
+ *
+ * このファイルは何か:
+ *   POST /api/resident-change-events で受け取る手入力パラメータの
+ *   形式チェックを担う FormRequest。CSV 取込の検証は別 Service で行う。
+ *
+ * どう使われるか:
+ *   - ResidentChangeEventController::store の冒頭で自動的に検証される。
+ *   - event_uid の DB 一意制約違反はここで事前に弾く。
+ *
+ * 設計メモ:
+ *   - 異動種別は 6 種類に限定。マスタ連携は行わず Rule::in で固定値検証する。
+ *   - 登録後の process_status や source_type の設定は Controller 側で行う。
  */
 class StoreResidentChangeEventRequest extends FormRequest
 {

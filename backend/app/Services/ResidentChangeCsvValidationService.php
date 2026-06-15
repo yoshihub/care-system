@@ -6,20 +6,20 @@ use App\Models\ResidentChangeEvent;
 use DateTime;
 
 /**
- * 住民異動イベントCSVの「中身チェック」専用クラス。
+ * 住民異動イベント CSV の検証。
  *
- * 【このクラスの役割】
- * CSVをDBに登録する前に、「形式が正しいか」「必須項目が埋まっているか」を調べる。
- * 問題があればエラー内容を返す。DBへの書き込みは行わない。
+ * このファイルは何か:
+ *   CSV 取込の前段で、ヘッダ形式・必須項目・日付・異動種別・イベント ID 重複を
+ *   チェックする専用クラス。DB への書き込みは行わない。
  *
- * 【使い方のイメージ】
- * 1. CSVの1行目（ヘッダ）と2行目以降（データ）を配列として渡す
- * 2. validate() を呼ぶ
- * 3. ok が true なら取込OK、false なら header_errors / row_errors を画面などに表示
+ * どう使われるか:
+ *   - ResidentChangeImportService が import() の冒頭で validate() を呼ぶ。
+ *   - ok=false のときは行エラー内容を API レスポンスとして返し、登録は行わない。
  *
- * 【チェック内容】
- * - ヘッダ行: 列名と順番が仕様どおりか
- * - 各行: 必須項目、日付形式、異動種別の値、イベントIDの重複
+ * 設計メモ:
+ *   - ヘッダが仕様と異なる場合は列対応が崩れるため、行チェックはスキップする。
+ *   - event_uid の重複は「CSV 内」と「既存 DB」の両方を見る。
+ *   - note 列は CSV 上の備考欄で、DB には保存しない。
  */
 class ResidentChangeCsvValidationService
 {

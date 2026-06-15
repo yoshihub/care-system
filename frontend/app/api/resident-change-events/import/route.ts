@@ -5,8 +5,22 @@ import { BackendApiError, getBackendBaseUrl } from "@/lib/backend";
 export const runtime = "nodejs";
 
 /**
- * 住民異動イベントCSV取込（Laravel POST /api/resident-change-events/import を中継）。
+ * 住民異動イベント CSV 取込 BFF Route Handler。
+ *
+ * このファイルは何か:
+ *   multipart/form-data で受け取った CSV を Laravel
+ *   POST /api/resident-change-events/import へ転送する Handler。
+ *
+ * どう使われるか:
+ *   - ResidentChangeCsvUpload (Client) が fetch("/api/resident-change-events/import") で呼ぶ。
+ *   - ファイル未選択時は BFF 側で 400 を返し、Laravel まで送らない。
+ *
+ * 設計メモ:
+ *   - JSON ではなく FormData のため backendFetch ではなく fetch を直接使用する。
+ *   - 取込結果 (行エラー・ヘッダエラー) は Laravel body をそのまま返す。
  */
+
+/** CSV ファイルを Laravel 取込 API へ転送する */
 export async function POST(request: NextRequest) {
   try {
     const incoming = await request.formData();

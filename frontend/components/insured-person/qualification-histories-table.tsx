@@ -9,6 +9,20 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+/**
+ * 資格履歴テーブル (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者詳細「資格履歴」タブの一覧 UI。資格取得・変更・喪失などの
+ *   qualification_histories レコードを表形式で表示する。
+ *
+ * どう使われるか:
+ *   - insured-person-detail-tabs の qualification パネルから histories を渡す。
+ *
+ * 設計メモ:
+ *   - change_type (ACQUIRE/CHANGE/LOSE 等) を日本語ラベルに変換して表示する。
+ */
+
 export type QualificationHistoryRow = {
   id: number;
   change_type: string;

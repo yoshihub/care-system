@@ -8,16 +8,32 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
 import { backendFetch } from "@/lib/backend";
 
+// ---- 型定義 -------------------------------------------------
+
 type EventsApiResponse = {
   data: ResidentChangeEventRow[];
   meta: { message: string };
 };
 
 /**
- * 住民異動イベント一覧/取込（SCR-01）。
- * Laravel API を BFF と同じ経路（backendFetch）で取得して表示する。
+ * 住民異動イベント一覧・取込画面 (SCR-01)。
+ *
+ * このファイルは何か:
+ *   住民記録由来の異動イベントを CSV 取込・一覧表示する RSC ページ。
+ *   未処理イベントから資格登録画面へ進む入口となる。
+ *
+ * どう使われるか:
+ *   - サイドバー「住民異動イベント」から遷移する。
+ *   - ResidentChangeCsvUpload (Client) が Route Handler 経由で CSV を POST する。
+ *   - 一覧は backendFetch で Laravel GET /api/resident-change-events を取得する。
+ *
+ * 設計メモ:
+ *   - CSV 取込は multipart のため Client → /api/resident-change-events/import → Laravel。
+ *   - 一覧取得失敗時は loadError をインライン表示 (既存画面のため error.tsx 未導入)。
  */
 export default async function ResidentChangeEventsPage() {
+  // ---- データ取得 -------------------------------------------------
+
   let events: ResidentChangeEventRow[] = [];
   let loadError: string | null = null;
 
@@ -29,6 +45,8 @@ export default async function ResidentChangeEventsPage() {
   } catch {
     loadError = "一覧の取得に失敗しました。しばらくしてから再度お試しください。";
   }
+
+  // ---- 画面 -------------------------------------------------
 
   return (
     <div className="mx-auto w-full max-w-5xl -mt-1">
@@ -57,8 +75,10 @@ export default async function ResidentChangeEventsPage() {
         </div>
       </header>
 
+      {/* CSV 取込 (Client → Route Handler) */}
       <ResidentChangeCsvUpload />
 
+      {/* イベント一覧 */}
       <Card className="overflow-hidden border-border/60 shadow-sm">
         <CardHeader className="border-b border-border/60 bg-muted/30 px-6 py-3">
           <div className="flex items-center justify-between gap-4">

@@ -1,6 +1,20 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+/**
+ * 住民異動イベント 処理状態バッジ (Server Component)。
+ *
+ * このファイルは何か:
+ *   resident_change_events.process_status (pending / processed / error) を
+ *   色付き Badge で表示する共通 UI。
+ *
+ * どう使われるか:
+ *   - イベント一覧テーブル、資格登録イベント概要、登録結果画面で共用する。
+ *
+ * 設計メモ:
+ *   - pending=未処理 (amber)、processed=処理済 (primary)、error=エラー (destructive)。
+ */
+
 const STATUS_LABELS: Record<string, string> = {
   pending: "未処理",
   processed: "処理済み",

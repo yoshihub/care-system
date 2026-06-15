@@ -9,11 +9,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 証発行履歴。
+ * 証発行履歴 Eloquent モデル (certificate_issue_histories)。
  *
- * 被保険者証などの証類を「誰に・いつ・どの理由で発行したか」を1件ずつ残す履歴。
- * 新規交付も再交付も発行のたびに1行積み上がり、いま手元にある有効な証を
- * is_latest=true で表す。PDFの実体は持たず保存場所 (pdf_path) のみ記録する。
+ * このファイルは何か:
+ *   被保険者証などの証類を「誰に・いつ・どの理由で発行したか」を1件ずつ残す
+ *   履歴テーブルへの ORM マッピング。
+ *
+ * どう使われるか:
+ *   - 被保険者詳細画面の「証発行履歴」タブで一覧表示する (参照のみ、PoC では登録 API 未実装)。
+ *   - 将来の証交付・再交付フロー (FLOW-02-02) で新規行が追加される想定。
+ *
+ * 設計メモ:
+ *   - 新規交付も再交付も発行のたびに1行積み上がり、is_latest=true が有効な証を表す。
+ *   - PDF 実体は持たず pdf_path のみ記録する (ストレージ連携は PoC 外)。
  */
 #[Fillable([
     'insured_person_id',

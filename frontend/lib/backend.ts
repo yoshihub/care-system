@@ -1,18 +1,29 @@
 /**
- * Next.js BFF から Laravel API を呼ぶための共通 fetch ヘルパー。
+ * Laravel API 呼び出し共通ヘルパー (backendFetch)。
  *
- * 方針:
- *   - ブラウザは Laravel API を直接呼ばない。サーバー側 (Route Handler) からのみ
- *     この関数を使って Laravel を呼ぶ。
- *   - Laravel の URL は環境変数で持ち、フロントには直接露出しない。
- *   - エラーは BackendApiError に正規化し、呼び出し側 (Route Handler) が
- *     UI 向けのレスポンスに整形しやすくする。
+ * このファイルは何か:
+ *   Next.js BFF 層 (RSC・Server Actions・Route Handler) から Laravel API を
+ *   呼び出すための fetch ラッパー。URL 組み立て・クエリ展開・JSON パース・
+ *   エラー正規化を一箇所に集約する。
+ *
+ * どう使われるか:
+ *   - 業務画面 (page.tsx) は backendFetch で Laravel を直接呼び、一覧・詳細を取得する。
+ *   - Route Handler (/app/api/**) も同関数で Laravel を中継する。
+ *   - Server Actions (資格登録など) も POST 時に backendFetch を使う。
+ *   - ブラウザ (Client Component) からは呼ばない。Client は Route Handler 経由に限定する。
+ *
+ * 設計メモ:
+ *   - BACKEND_INTERNAL_URL 未設定時は Docker 内 nginx (http://nginx) を既定とする。
+ *   - cache: "no-store" で常に最新データを取得する (介護業務の参照系)。
+ *   - HTTP 2xx 以外は BackendApiError に変換し、status と body を保持して呼び出し側へ返す。
  */
 
 /** Laravel API のベースURL。コンテナ間通信では http://nginx を既定にする。 */
 export function getBackendBaseUrl(): string {
   return process.env.BACKEND_INTERNAL_URL ?? "http://nginx";
 }
+
+// ---- エラー型 -------------------------------------------------
 
 /**
  * Laravel API 呼び出しが失敗したことを表すエラー。
@@ -35,6 +46,8 @@ export type BackendFetchOptions = RequestInit & {
   /** クエリ文字列に展開するパラメータ (undefined/null の値は無視する)。 */
   query?: Record<string, string | number | boolean | undefined | null>;
 };
+
+// ---- API 呼び出し -------------------------------------------------
 
 /**
  * Laravel API を呼び、JSON をパースして返す。

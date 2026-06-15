@@ -4,12 +4,24 @@ import { BackendApiError, backendFetch } from "@/lib/backend";
 
 export const runtime = "nodejs";
 
-/** 一覧APIに渡す検索クエリのキー */
+/** 一覧 API に渡す検索クエリのキー */
 const SEARCH_KEYS = ["status", "event_type", "name", "resident_no"] as const;
 
 /**
- * 住民異動イベント一覧（Laravel GET /api/resident-change-events を中継）。
+ * 住民異動イベント BFF Route Handler (GET / POST)。
+ *
+ * このファイルは何か:
+ *   Laravel /api/resident-change-events の一覧取得・手入力登録を中継する Handler。
+ *
+ * どう使われるか:
+ *   - GET: 検索クエリ付きでイベント一覧を返す (RSC は backendFetch 直接も可)。
+ *   - POST: JSON ボディを Laravel へ転送し、手入力イベントを 201 で作成する。
+ *
+ * 設計メモ:
+ *   - 422 バリデーションエラーは Laravel body をそのままクライアントへ返す。
  */
+
+/** 住民異動イベント一覧を Laravel から取得して JSON で返す */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;
@@ -30,9 +42,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-/**
- * 住民異動イベント手入力登録（Laravel POST /api/resident-change-events を中継）。
- */
+/** 住民異動イベントを手入力で Laravel に POST し、作成結果を 201 で返す */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();

@@ -9,8 +9,21 @@ type RouteContext = {
 };
 
 /**
- * 被保険者詳細（Laravel GET /api/insured-persons/{id} を中継）。
+ * 被保険者詳細 BFF Route Handler。
+ *
+ * このファイルは何か:
+ *   Laravel GET /api/insured-persons/{id} を中継する Route Handler。
+ *   基本情報・各種履歴をまとめた詳細 JSON を返す。
+ *
+ * どう使われるか:
+ *   - 主に RSC (insured-persons/[id]/page.tsx) は backendFetch で直接呼ぶ。
+ *   - 本 Handler は BFF 経由の API 入口として Client や外部から利用可能。
+ *
+ * 設計メモ:
+ *   - 404 など Laravel のエラー body は status ごとにそのまま返す。
  */
+
+/** 被保険者 ID に紐づく詳細を Laravel から取得して JSON で返す */
 export async function GET(_request: Request, context: RouteContext) {
   try {
     const { id } = await context.params;

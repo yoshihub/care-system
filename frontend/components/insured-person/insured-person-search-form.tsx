@@ -4,6 +4,20 @@ import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+/**
+ * 被保険者一覧 検索フォーム (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者一覧 (SCR-02) 上部の検索 UI。キーワード・資格状態・番号で絞り込む。
+ *
+ * どう使われるか:
+ *   - insured-persons/page.tsx から defaultValues (searchParams) を受け取り描画する。
+ *   - method="GET" で同一 URL に submit し、RSC が再取得する (Client router 不使用)。
+ *
+ * 設計メモ:
+ *   - クリアはリンクで /qualification/insured-persons へ遷移 (クエリなし)。
+ */
+
 type SearchValues = {
   q?: string;
   status?: string;
@@ -18,7 +32,7 @@ type InsuredPersonSearchFormProps = {
 const inputClassName =
   "h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1";
 
-/** 被保険者一覧の検索フォーム（GET + searchParams） */
+/** 被保険者一覧の検索フォーム (GET + searchParams) */
 export function InsuredPersonSearchForm({
   defaultValues,
 }: InsuredPersonSearchFormProps) {
@@ -34,6 +48,7 @@ export function InsuredPersonSearchForm({
         </div>
       </CardHeader>
       <CardContent className="px-6 py-4">
+        {/* GET 送信: searchParams 更新 → 親 RSC が一覧を再取得 */}
         <form
           method="GET"
           action="/qualification/insured-persons"

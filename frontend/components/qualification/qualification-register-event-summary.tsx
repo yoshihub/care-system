@@ -3,6 +3,21 @@ import { ClipboardList } from "lucide-react";
 import { ProcessStatusBadge } from "@/components/resident-change/process-status-badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+/**
+ * 資格登録 対象イベント概要 Card (Server Component)。
+ *
+ * このファイルは何か:
+ *   SCR-04 上部に表示する、登録対象の住民異動イベントの読み取り専用サマリー。
+ *   QualificationRegisterEvent 型 (一覧 API の 1 行 + 住所詳細) を export する。
+ *
+ * どう使われるか:
+ *   - register/page.tsx が一覧 API から find した event を渡す。
+ *   - QualificationRegisterForm も同じ event 型を参照する。
+ *
+ * 設計メモ:
+ *   - 編集不可。担当者が登録前にイベント内容を確認するための表示専用 UI。
+ */
+
 export type QualificationRegisterEvent = {
   id: number;
   event_uid: string;

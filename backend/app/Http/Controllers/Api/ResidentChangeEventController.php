@@ -12,10 +12,21 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * 住民異動イベント API。
+ * 住民異動イベント API コントローラ。
  *
- * 住民記録側で発生した「転入・転出・死亡・住所変更・氏名変更・65歳到達」などの出来事を
- * PoC用に取り込み、担当者が一覧で確認するための入口。
+ * このファイルは何か:
+ *   住民記録側で発生した異動 (転入・転出・死亡・住所変更・氏名変更・65歳到達) を
+ *   PoC 用に取り込み、担当者が一覧で確認するための API 入口。
+ *
+ * どう使われるか:
+ *   - index: 処理状態・異動種別・氏名・住民番号で絞り込み一覧を返す。
+ *   - store: 画面からの手入力登録。登録直後は pending (未処理)。
+ *   - import: CSV ファイルをアップロードし、ResidentChangeImportService で一括取込する。
+ *
+ * 設計メモ:
+ *   - ここで登録しただけでは被保険者は作られない。資格登録は別 API で行う。
+ *   - CSV 取込の検証・DB 登録は Service 層に委譲し、Controller はファイル受け取りと
+ *     ステータスコード (200 / 422) の切り替えのみ担う。
  */
 class ResidentChangeEventController extends Controller
 {
@@ -27,6 +38,8 @@ class ResidentChangeEventController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = ResidentChangeEvent::query();
+
+        // ---- 検索条件 (クエリパラメータ) --------------------------------
 
         if ($request->filled('status')) {
             $query->where('process_status', $request->query('status'));
@@ -61,6 +74,8 @@ class ResidentChangeEventController extends Controller
     {
         $input = $request->validated();
 
+        // 手入力登録: source_type=manual, process_status=pending でイベントを作成する。
+        // 被保険者・資格履歴の作成は資格登録 API 側で行う。
         $event = ResidentChangeEvent::create([
             'event_uid' => $input['event_uid'],
             'municipality_code' => $input['municipality_code'],
@@ -94,6 +109,8 @@ class ResidentChangeEventController extends Controller
      */
     public function import(Request $request, ResidentChangeImportService $importService): JsonResponse
     {
+        // ---- アップロードファイルの受け取り ----------------------------
+
         $request->validate([
             'file' => ['required', 'file', 'max:2048'],
         ]);
@@ -109,6 +126,7 @@ class ResidentChangeEventController extends Controller
         $fileName = $uploaded->getClientOriginalName();
         $result = $importService->import($csvContent, $fileName);
 
+        // 検証エラー時は 422、成功時は 200 を返す
         $status = $result['ok'] ? 200 : 422;
 
         return response()->json([

@@ -14,6 +14,8 @@ import type { ReissueApplicationRow } from "@/components/insured-person/reissue-
 import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
 import { BackendApiError, backendFetch } from "@/lib/backend";
 
+// ---- 型定義 -------------------------------------------------
+
 type InsuredPersonDetailApiResponse = {
   data: {
     basic_info: InsuredPersonBasicInfo;
@@ -25,8 +27,19 @@ type InsuredPersonDetailApiResponse = {
 };
 
 /**
- * 被保険者詳細（SCR-03）— 基本情報。
- * Laravel API を BFF と同じ経路（backendFetch）で取得して表示する。
+ * 被保険者詳細画面 (SCR-03)。
+ *
+ * このファイルは何か:
+ *   1 人の被保険者について、基本情報・資格履歴・証発行履歴・再交付申請を
+ *   タブ切り替えで表示する RSC ページ。
+ *
+ * どう使われるか:
+ *   - 被保険者一覧の氏名リンク、または資格登録完了後の「被保険者詳細へ」から遷移する。
+ *   - Laravel GET /api/insured-persons/{id} でまとめて取得し、Client タブコンポーネントへ渡す。
+ *
+ * 設計メモ:
+ *   - 404 は BackendApiError.status === 404 で notFound() を呼び分ける。
+ *   - タブ UI は Client Component (insured-person-detail-tabs) に委譲する。
  */
 export default async function InsuredPersonDetailPage({
   params,
@@ -34,6 +47,9 @@ export default async function InsuredPersonDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  // ---- データ取得 -------------------------------------------------
+
   let basicInfo: InsuredPersonBasicInfo | null = null;
   let qualificationHistories: QualificationHistoryRow[] = [];
   let certificateIssueHistories: CertificateIssueHistoryRow[] = [];
@@ -54,6 +70,8 @@ export default async function InsuredPersonDetailPage({
     }
     loadError = "詳細の取得に失敗しました。しばらくしてから再度お試しください。";
   }
+
+  // ---- 画面 -------------------------------------------------
 
   return (
     <div className="mx-auto w-full max-w-5xl -mt-1">
@@ -96,13 +114,16 @@ export default async function InsuredPersonDetailPage({
           {loadError}
         </p>
       ) : basicInfo ? (
-        <InsuredPersonDetailTabs
+        <>
+          {/* 詳細タブ (Client: 基本情報・各種履歴) */}
+          <InsuredPersonDetailTabs
           insuredPersonId={basicInfo.id}
           basicInfo={basicInfo}
           qualificationHistories={qualificationHistories}
           certificateIssueHistories={certificateIssueHistories}
           reissueApplications={reissueApplications}
         />
+        </>
       ) : null}
     </div>
   );

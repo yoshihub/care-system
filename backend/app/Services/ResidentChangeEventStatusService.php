@@ -6,11 +6,20 @@ use App\Models\ResidentChangeEvent;
 use InvalidArgumentException;
 
 /**
- * 住民異動イベントの処理状態を更新する。
+ * 住民異動イベントの処理状態管理。
  *
- * pending / processed / error の切り替えと、
- * processed_at・error_message の保存を担当する。
- * 資格登録の本処理は別の Service で行う。
+ * このファイルは何か:
+ *   resident_change_events.process_status と processed_at・error_message を
+ *   更新するだけの薄いサービス。資格登録そのものは行わない。
+ *
+ * どう使われるか:
+ *   - QualificationRegistrationService が正常終了時に markAsProcessed() を呼ぶ。
+ *   - 将来、資格登録失敗時に markAsError() でエラー理由を残す想定。
+ *   - markAsPending() は再試行用。PoC では必要になったときだけ使う。
+ *
+ * 設計メモ:
+ *   - 状態遷移のルール (pending / processed / error) をここに集約し、
+ *     Controller や他 Service から直接カラムを書き換えない。
  */
 class ResidentChangeEventStatusService
 {

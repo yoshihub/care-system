@@ -6,10 +6,18 @@ use App\Models\InsuredPerson;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * 被保険者のテスト/Seeder用ダミーデータ生成。
+ * 被保険者 Factory (InsuredPersonFactory)。
  *
- * 既定では「第1号・資格有効 (active)」の被保険者を作る。
- * 喪失済みなど、デモで使いたい状況は state で切り替える。
+ * このファイルは何か:
+ *   InsuredPerson モデル向けのテスト/Seeder 用ダミーデータ生成器。
+ *   市区町村コード・被保険者番号・資格状態などをランダムに埋める。
+ *
+ * どう使われるか:
+ *   - DemoSeeder が active 被保険者を複数作成する。
+ *   - PHPUnit や tinker で被保険者関連 API のテストデータを作る。
+ *
+ * 設計メモ:
+ *   - 既定は「第1号・資格有効 (active)」。喪失済み等は state() で切り替える。
  *
  * @extends Factory<InsuredPerson>
  */

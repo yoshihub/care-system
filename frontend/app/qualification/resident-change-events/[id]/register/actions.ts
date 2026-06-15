@@ -1,6 +1,25 @@
 "use server";
 
+/**
+ * 資格登録 Server Actions。
+ *
+ * このファイルは何か:
+ *   資格登録フォーム (QualificationRegisterForm) から呼ばれる Server Action 群。
+ *   FormData を Laravel POST /api/qualification-histories 用の JSON に変換して送信する。
+ *
+ * どう使われるか:
+ *   - registerQualificationAction が useActionState と組み合わされ、登録結果を UI に返す。
+ *   - 成功時は被保険者・資格履歴・元イベントの process_status をまとめて返す。
+ *   - 失敗時は Laravel の 422 バリデーションを fieldErrors にマッピングする。
+ *
+ * 設計メモ:
+ *   - Route Handler を経由せず backendFetch で Laravel を直接呼ぶ (Server Action から可能)。
+ *   - 必須項目 (source_event_id, change_type, qualification_date) は Action 側でも事前検証する。
+ */
+
 import { BackendApiError, backendFetch } from "@/lib/backend";
+
+// ---- 型定義 -------------------------------------------------
 
 export type QualificationRegisterResult = {
   qualification_history: {
@@ -43,6 +62,8 @@ export const initialRegisterQualificationState: RegisterQualificationState = {
   ok: false,
 };
 
+// ---- ヘルパー -------------------------------------------------
+
 function readOptionalString(formData: FormData, key: string): string | undefined {
   const value = formData.get(key);
   if (typeof value !== "string") {
@@ -73,6 +94,8 @@ function parseApiError(error: unknown): RegisterQualificationState {
     message: "資格登録に失敗しました。通信環境を確認してください。",
   };
 }
+
+// ---- Server Action -------------------------------------------------
 
 /** 資格登録を Laravel API 経由で実行する Server Action */
 export async function registerQualificationAction(

@@ -9,6 +9,21 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+/**
+ * 再交付申請テーブル (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者詳細「再交付申請」タブの一覧 UI。被保険者証の再交付申請
+ *   (reissue_applications) を表示する。
+ *
+ * どう使われるか:
+ *   - insured-person-detail-tabs の reissue パネルから applications を渡す。
+ *
+ * 設計メモ:
+ *   - 申請状態 (RECEIVED/APPROVED) ごとに Badge の色を変える。
+ *   - 再交付申請の新規登録画面は PoC 範囲外 (リンクのみプレースホルダー)。
+ */
+
 export type ReissueApplicationRow = {
   id: number;
   certificate_type: string;

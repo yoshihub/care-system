@@ -10,12 +10,24 @@ import {
 import { QUALIFICATION_NAV_ITEMS } from "@/components/layout/nav-items";
 
 /**
- * 被保険者資格ダッシュボード兼メニュー（SCR-DB）。
- * 被保険者資格の業務メニューを表示する。
+ * 被保険者資格ダッシュボード (SCR-DB)。
+ *
+ * このファイルは何か:
+ *   /qualification のトップ画面。被保険者資格業務 (住民異動・被保険者一覧など)
+ *   への入口カードを並べるメニュー画面。
+ *
+ * どう使われるか:
+ *   - サイドバーまたはトップポータルから遷移し、担当者が次に行う業務を選ぶ。
+ *   - QUALIFICATION_NAV_ITEMS を map して Card + Link を描画する (RSC、データ取得なし)。
+ *
+ * 設計メモ:
+ *   - 住民異動イベントのみ説明文付きで活性。他メニューは「準備中」バッジ表示。
+ *   - layout.tsx のシェル (サイドバー・ヘッダー) 配下で表示される。
  */
 export default function QualificationDashboardPage() {
   return (
     <div className="mx-auto w-full max-w-4xl">
+      {/* ---- ページヘッダー ---- */}
       <header className="mb-8 border-l-4 border-primary pl-4">
         <h1 className="text-2xl font-bold tracking-tight">被保険者資格</h1>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -23,6 +35,7 @@ export default function QualificationDashboardPage() {
         </p>
       </header>
 
+      {/* ---- 業務メニューカード ---- */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {QUALIFICATION_NAV_ITEMS.map((item) => {
           const Icon = item.icon;

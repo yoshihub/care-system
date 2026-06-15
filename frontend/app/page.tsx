@@ -1,3 +1,19 @@
+/**
+ * トップページ — 9大分類ポータル (SCR-00)。
+ *
+ * このファイルは何か:
+ *   介護保険システムの業務大分類 (9カテゴリ) をカード一覧で表示する
+ *   エントリ画面。PoC では「被保険者資格」のみリンクが有効。
+ *
+ * どう使われるか:
+ *   - ルート URL (/) にアクセスすると表示される。
+ *   - 被保険者資格カードをクリックすると /qualification ダッシュボードへ遷移する。
+ *   - 他8大分類は見た目のみ (クリック不可、将来拡張用)。
+ *
+ * 設計メモ:
+ *   - カテゴリ定義は lib/business-categories.ts に集約し、active/href で制御する。
+ *   - 被保険者資格エリアと同一の Card デザイン (portalCardClassName) を使う。
+ */
 import Link from "next/link";
 
 import {
@@ -8,15 +24,10 @@ import {
 } from "@/components/ui/card";
 import { BUSINESS_CATEGORIES } from "@/lib/business-categories";
 
-/** 9大分類カードの共通見た目（被保険者資格と同一デザイン） */
+/** 被保険者資格エリアの共通見た目 (portal と同一) */
 const portalCardClassName =
   "h-full ring-1 ring-primary/25 transition-all hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md";
 
-/**
- * トップページ（SCR-00 大分類ポータル）。
- * 介護保険システムの9大分類を表示する。今回のデモ対象は「被保険者資格」のみ活性で、
- * 選択すると被保険者資格ダッシュボードへ遷移する。他8大分類は見た目は同じで、クリックしても遷移しない。
- */
 export default function PortalPage() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col px-6 py-16">

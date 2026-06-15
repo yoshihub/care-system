@@ -11,6 +11,22 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+/**
+ * 被保険者一覧テーブル (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者一覧 API の 1 行分の型 (InsuredPersonRow) と、
+ *   その配列を表形式で描画するテーブル UI。
+ *
+ * どう使われるか:
+ *   - insured-persons/page.tsx が backendFetch で取得した persons を渡す。
+ *   - 氏名セルは詳細ページ (/qualification/insured-persons/[id]) への Link。
+ *
+ * 設計メモ:
+ *   - 0 件時はテーブルではなく空状態メッセージを表示する。
+ *   - InsuredPersonRow 型は page.tsx 側の API レスポンス型でも import される。
+ */
+
 export type InsuredPersonRow = {
   id: number;
   insured_no: string;

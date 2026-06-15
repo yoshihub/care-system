@@ -7,10 +7,19 @@ use App\Models\QualificationHistory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * 資格履歴のテスト/Seeder用ダミーデータ生成。
+ * 資格履歴 Factory (QualificationHistoryFactory)。
  *
- * 既定では「資格取得 (ACQUIRE)・最新 (is_latest=true)」の履歴を作る。
- * 親の被保険者が指定されなければ新たに1人作る。喪失履歴は state で切り替える。
+ * このファイルは何か:
+ *   QualificationHistory モデル向けのテスト/Seeder 用ダミーデータ生成器。
+ *   異動区分・資格理由・有効期間等をランダムに埋める。
+ *
+ * どう使われるか:
+ *   - DemoSeeder が被保険者に acquire 履歴 (is_latest=true) を付与する。
+ *   - 資格登録 API のテストで履歴行を検証する。
+ *
+ * 設計メモ:
+ *   - 親 insured_person_id 未指定時は InsuredPerson を自動作成する。
+ *   - acquire / lose 等の state で change_type を切り替える。
  *
  * @extends Factory<QualificationHistory>
  */

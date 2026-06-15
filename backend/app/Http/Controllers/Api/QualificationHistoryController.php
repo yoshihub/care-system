@@ -12,9 +12,19 @@ use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 
 /**
- * 資格履歴 API。
+ * 資格履歴 API コントローラ。
  *
- * 住民異動イベントをもとに資格登録を行う入口。
+ * このファイルは何か:
+ *   住民異動イベントをもとに資格登録を実行する API の入口。
+ *   HTTP 層では入力検証とレスポンス整形のみを行い、業務ロジックは Service に委譲する。
+ *
+ * どう使われるか:
+ *   - POST /api/qualification-histories で資格登録画面から呼ばれる。
+ *   - 成功時は作成された資格履歴に加え、更新後の被保険者・処理済みイベントも返す。
+ *
+ * 設計メモ:
+ *   - 業務ルール違反 (未処理イベントでない、被保険者重複など) は
+ *     InvalidArgumentException を 422 + BUSINESS_RULE_001 で返す。
  */
 class QualificationHistoryController extends Controller
 {

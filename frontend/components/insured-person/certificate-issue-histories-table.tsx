@@ -9,6 +9,20 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
+/**
+ * 証発行履歴テーブル (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者詳細「証発行履歴」タブの一覧 UI。被保険者証の交付・再交付履歴を表示する。
+ *
+ * どう使われるか:
+ *   - insured-person-detail-tabs の certificate パネルから histories を渡す。
+ *   - CertificateIssueHistoryRow 型は page.tsx の API 型でも import される。
+ *
+ * 設計メモ:
+ *   - is_latest が true の行に「最新」Badge を付与する。
+ */
+
 export type CertificateIssueHistoryRow = {
   id: number;
   certificate_type: string;

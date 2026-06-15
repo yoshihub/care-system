@@ -7,10 +7,19 @@ use App\Models\ReissueApplication;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * 再交付申請のテスト/Seeder用ダミーデータ生成。
+ * 再交付申請 Factory (ReissueApplicationFactory)。
  *
- * 既定では「紛失による再交付・受付済・未返還」の申請を作る。
- * 親の被保険者が指定されなければ新たに1人作る。承認済みは state で切り替える。
+ * このファイルは何か:
+ *   ReissueApplication モデル向けのテスト/Seeder 用ダミーデータ生成器。
+ *   申請理由・申請者・返還状況等をランダムに埋める。
+ *
+ * どう使われるか:
+ *   - DemoSeeder が主役被保険者に受付済 (received) の再交付申請を1件作成する。
+ *   - 再交付フロー (FLOW-02-02) 実装時のテストデータとして利用する。
+ *
+ * 設計メモ:
+ *   - 親 insured_person_id 未指定時は InsuredPerson を自動作成する。
+ *   - received / approved 等の state で application_status_code を切り替える。
  *
  * @extends Factory<ReissueApplication>
  */

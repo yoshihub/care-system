@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 証発行履歴のJSON表現。
+ * 証発行履歴 API レスポンス整形 (CertificateIssueHistoryResource)。
+ *
+ * このファイルは何か:
+ *   CertificateIssueHistory モデルを JSON に変換する Laravel API Resource。
+ *   証種別・発行理由・発行日・PDF パス等を返す。
+ *
+ * どう使われるか:
+ *   - 被保険者詳細 API の certificate_issue_histories 配列として利用。
+ *   - フロントの「証発行履歴」タブがテーブル表示する。
+ *
+ * 設計メモ:
+ *   - PoC では参照のみ。登録・PDF 生成 API は未実装 (FLOW-02-02 以降)。
+ *   - is_latest で現在有効な証を識別する。
  *
  * @mixin CertificateIssueHistory
  */

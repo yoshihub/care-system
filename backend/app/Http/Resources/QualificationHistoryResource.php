@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 資格履歴のJSON表現。
+ * 資格履歴 API レスポンス整形 (QualificationHistoryResource)。
+ *
+ * このファイルは何か:
+ *   QualificationHistory モデルを JSON に変換する Laravel API Resource。
+ *   異動区分・資格理由・有効期間などを返す。
+ *
+ * どう使われるか:
+ *   - POST /api/qualification-histories (資格登録) のレスポンス本体として利用。
+ *   - 被保険者詳細の qualification_histories 配列でも利用。
+ *
+ * 設計メモ:
+ *   - is_latest フラグで「現在有効な履歴行」を識別できる。
+ *   - source_event_id により起点イベントへのトレースが可能。
  *
  * @mixin QualificationHistory
  */

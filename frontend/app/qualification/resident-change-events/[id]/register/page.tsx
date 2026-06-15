@@ -10,14 +10,28 @@ import { QualificationRegisterForm } from "@/components/qualification/qualificat
 import { QUALIFICATION_DASHBOARD_HREF } from "@/components/layout/nav-items";
 import { backendFetch } from "@/lib/backend";
 
+// ---- 型定義 -------------------------------------------------
+
 type EventsApiResponse = {
   data: QualificationRegisterEvent[];
   meta: { message: string };
 };
 
 /**
- * 資格登録（SCR-04）。
- * 住民異動イベントをもとに資格登録フォームを表示する。
+ * 資格登録画面 (SCR-04)。
+ *
+ * このファイルは何か:
+ *   住民異動イベント 1 件を対象に、資格登録フォームを表示する RSC ページ。
+ *   イベント概要 (Summary) と登録フォーム (Form) を縦に並べる。
+ *
+ * どう使われるか:
+ *   - イベント一覧の「資格登録」ボタン (pending のみ) から /register へ遷移する。
+ *   - イベント一覧 API から該当 ID を find し、見つからなければ notFound()。
+ *   - 登録実行は Client Form → Server Action → backendFetch POST で行う。
+ *
+ * 設計メモ:
+ *   - 単体 GET API が無いため、一覧取得 + クライアント側 find でイベントを特定する。
+ *   - 不正な [id] (非数・0以下) は notFound() で 404 に統一する。
  */
 export default async function QualificationRegisterPage({
   params,
@@ -30,6 +44,8 @@ export default async function QualificationRegisterPage({
   if (!Number.isInteger(eventId) || eventId <= 0) {
     notFound();
   }
+
+  // ---- データ取得 -------------------------------------------------
 
   let event: QualificationRegisterEvent | undefined;
   let loadError: string | null = null;
@@ -46,6 +62,8 @@ export default async function QualificationRegisterPage({
   if (!loadError && !event) {
     notFound();
   }
+
+  // ---- 画面 -------------------------------------------------
 
   return (
     <div className="mx-auto w-full max-w-5xl -mt-1">
@@ -88,7 +106,9 @@ export default async function QualificationRegisterPage({
       ) : (
         event && (
           <>
+            {/* 対象イベント概要 (読み取り専用) */}
             <QualificationRegisterEventSummary event={event} />
+            {/* 資格登録フォーム (Server Action) */}
             <QualificationRegisterForm event={event} />
           </>
         )

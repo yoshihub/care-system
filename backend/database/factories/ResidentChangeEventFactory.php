@@ -6,10 +6,18 @@ use App\Models\ResidentChangeEvent;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * 住民異動イベントのテスト/Seeder用ダミーデータ生成。
+ * 住民異動イベント Factory (ResidentChangeEventFactory)。
  *
- * 既定では「65歳到達・未処理 (pending)」のイベントを作る。
- * 転入・処理済み・エラーなど、デモで使いたい状況は state で切り替える。
+ * このファイルは何か:
+ *   ResidentChangeEvent モデル向けのテスト/Seeder 用ダミーデータ生成器。
+ *   異動種別・処理状態・スナップショット住所等をランダムに埋める。
+ *
+ * どう使われるか:
+ *   - DemoSeeder が未処理 (pending) の 65歳到達・転入イベントを作成する。
+ *   - 住民異動一覧・CSV 取込のテストで利用する。
+ *
+ * 設計メモ:
+ *   - 既定は「65歳到達・未処理」。age65 / moveIn / processed 等の state を提供する。
  *
  * @extends Factory<ResidentChangeEvent>
  */

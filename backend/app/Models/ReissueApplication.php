@@ -9,11 +9,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * 再交付申請。
+ * 再交付申請 Eloquent モデル (reissue_applications)。
  *
- * 被保険者証などを紛失・破損したときに受け付ける再交付の申請を1件ずつ残す。
- * 申請内容・申請者情報・古い証の返還状況をまとめて管理し、再発行した場合は
- * その結果の証発行履歴を reissued_issue_history_id で参照する。
+ * このファイルは何か:
+ *   被保険者証などを紛失・破損したときに受け付ける再交付申請を1件ずつ残す
+ *   テーブルへの ORM マッピング。
+ *
+ * どう使われるか:
+ *   - 被保険者詳細画面の「再交付申請」タブで一覧表示する (参照のみ、PoC では登録 API 未実装)。
+ *   - 将来の再交付申請フォーム (FLOW-02-02) からレコードが作成される想定。
+ *
+ * 設計メモ:
+ *   - 申請内容・申請者情報・古い証の返還状況を1行にまとめる。
+ *   - 再発行完了後は reissued_issue_history_id で証発行履歴と紐づける。
  */
 #[Fillable([
     'insured_person_id',

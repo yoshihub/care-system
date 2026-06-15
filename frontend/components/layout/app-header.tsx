@@ -1,8 +1,22 @@
+/**
+ * 被保険者資格エリアの上部ヘッダー (AppHeader)。
+ *
+ * このファイルは何か:
+ *   /qualification/** 配下の画面上部に固定表示するヘッダーコンポーネント。
+ *   システム名と現在の対応業務ラベルを示す。
+ *
+ * どう使われるか:
+ *   - qualification/layout.tsx から読み込まれ、メインコンテンツの上に常時表示される。
+ *   - 右側の「対応業務」は nav-items.ts の QUALIFICATION_BUSINESS_LABEL を表示する。
+ *
+ * 設計メモ:
+ *   - 機能ID・帳票IDは画面に出さない (PoC の UX 方針)。
+ *   - Server Component として実装 (状態なし)。
+ */
 import { QUALIFICATION_BUSINESS_LABEL } from "@/components/layout/nav-items";
 
 /**
- * 被保険者資格エリアの上部ヘッダー。
- * 左にシステム名、右に現在の「対応業務」を表示する（機能ID・帳票IDは表示しない）。
+ * 左: システム名、右: 対応業務バッジ。
  */
 export function AppHeader() {
   return (

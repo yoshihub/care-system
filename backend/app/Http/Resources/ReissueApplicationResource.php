@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 再交付申請のJSON表現。
+ * 再交付申請 API レスポンス整形 (ReissueApplicationResource)。
+ *
+ * このファイルは何か:
+ *   ReissueApplication モデルを JSON に変換する Laravel API Resource。
+ *   申請日・理由・申請者・返還状況等を返す。
+ *
+ * どう使われるか:
+ *   - 被保険者詳細 API の reissue_applications 配列として利用。
+ *   - フロントの「再交付申請」タブがテーブル表示する。
+ *
+ * 設計メモ:
+ *   - PoC では参照のみ。申請登録 API は未実装 (FLOW-02-02 以降)。
+ *   - reissued_issue_history_id で再発行結果の証履歴と紐づけ可能。
  *
  * @mixin ReissueApplication
  */

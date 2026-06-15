@@ -11,9 +11,20 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 /**
- * 被保険者 API。
+ * 被保険者 API コントローラ。
  *
- * 資格情報の照会・一覧確認の入口。PoCでは登録は資格登録タスク側で行う。
+ * このファイルは何か:
+ *   被保険者 (insured_persons) の一覧・詳細を返す読み取り専用 API の入口。
+ *   被保険者の新規作成は資格登録 API 側で行うため、ここには store はない。
+ *
+ * どう使われるか:
+ *   - Next.js BFF 経由でフロントの被保険者検索・詳細画面から呼ばれる。
+ *   - index: キーワード・状態・番号などで絞り込み一覧を返す。
+ *   - show: 基本情報に加え、資格履歴・証発行履歴・再交付申請を eager load して返す。
+ *
+ * 設計メモ:
+ *   - レスポンス整形は InsuredPersonResource / InsuredPersonDetailResource に委譲する。
+ *   - PoC ではページネーションは未実装。全件取得後に Resource で整形する。
  */
 class InsuredPersonController extends Controller
 {
@@ -31,6 +42,9 @@ class InsuredPersonController extends Controller
     {
         $query = InsuredPerson::query();
 
+        // ---- 検索条件 (クエリパラメータ) --------------------------------
+
+        // キーワード横断検索: 氏名・カナ・被保険者番号・住民番号のいずれかに部分一致
         if ($request->filled('q')) {
             $term = $request->query('q');
             $query->where(function ($builder) use ($term) {
@@ -73,6 +87,7 @@ class InsuredPersonController extends Controller
      */
     public function show(string $id): JsonResponse|InsuredPersonDetailResource
     {
+        // 詳細表示に必要な関連履歴をまとめて取得 (N+1 回避)
         $person = InsuredPerson::query()
             ->with([
                 'qualificationHistories' => fn ($query) => $query

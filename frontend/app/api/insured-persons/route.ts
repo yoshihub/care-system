@@ -4,7 +4,7 @@ import { BackendApiError, backendFetch } from "@/lib/backend";
 
 export const runtime = "nodejs";
 
-/** 一覧APIに渡す検索クエリのキー */
+/** 一覧 API に渡す検索クエリのキー */
 const SEARCH_KEYS = [
   "q",
   "status",
@@ -14,8 +14,22 @@ const SEARCH_KEYS = [
 ] as const;
 
 /**
- * 被保険者一覧（Laravel GET /api/insured-persons を中継）。
+ * 被保険者一覧 BFF Route Handler。
+ *
+ * このファイルは何か:
+ *   Laravel GET /api/insured-persons を中継する Next.js Route Handler。
+ *   クエリパラメータをそのまま Laravel へ転送する。
+ *
+ * どう使われるか:
+ *   - 主に RSC (insured-persons/page.tsx) は backendFetch で Laravel を直接呼ぶ。
+ *   - 本 Route Handler は Client からの fetch や外部連携用の BFF 入口として用意する。
+ *
+ * 設計メモ:
+ *   - 空文字のクエリは転送しない (Laravel 側のデフォルト検索を維持)。
+ *   - BackendApiError は Laravel の body をそのまま NextResponse に載せ替える。
  */
+
+/** 被保険者一覧を Laravel から取得して JSON で返す */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = request.nextUrl;

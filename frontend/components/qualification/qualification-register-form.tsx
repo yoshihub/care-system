@@ -1,5 +1,22 @@
 "use client";
 
+/**
+ * 資格登録フォーム (Client Component)。
+ *
+ * このファイルは何か:
+ *   SCR-04 の登録フォームと、登録成功後の結果表示 UI。
+ *   useActionState + registerQualificationAction で Server Action を呼び出す。
+ *
+ * どう使われるか:
+ *   - register/page.tsx (RSC) から event prop を受け取り、Summary の下に配置する。
+ *   - 異動種別 (event_type) から change_type の初期値を推定する (defaultChangeType)。
+ *   - pending 以外のイベントはフォームを disabled にし、登録不可メッセージを表示する。
+ *
+ * 設計メモ:
+ *   - 成功時は同一コンポーネント内で RegisterResultView に切り替える (別ページ遷移なし)。
+ *   - Laravel 422 の fieldErrors を各入力欄下に表示する。
+ */
+
 import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
@@ -91,6 +108,7 @@ export function QualificationRegisterForm({
           </p>
         )}
 
+        {/* Server Action 送信: registerQualificationAction */}
         <form action={formAction} className="grid gap-4 sm:grid-cols-2">
           <input type="hidden" name="source_event_id" value={event.id} />
 

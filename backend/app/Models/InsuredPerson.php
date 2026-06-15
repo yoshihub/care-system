@@ -9,11 +9,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * 被保険者。
+ * 被保険者 Eloquent モデル (insured_persons)。
  *
- * 介護保険の資格を持つ人、またはこれから持つ候補となる人の基本情報と、
- * いま現在の資格状態をまとめて持つ本体。1人につき1行で「最新の状態」を表す。
- * 資格の変遷の履歴は QualificationHistory 側に積む。
+ * このファイルは何か:
+ *   介護保険の資格を持つ人、またはこれから持つ候補となる人の基本情報と、
+ *   いま現在の資格状態を1行で表す本体テーブルへの ORM マッピング。
+ *
+ * どう使われるか:
+ *   - 資格登録 (ACQUIRE 等) で新規作成、または CHANGE / LOSE 等で更新される。
+ *   - 被保険者一覧・詳細 API、資格登録後の参照で InsuredPersonController から利用される。
+ *   - 資格の変遷そのものは QualificationHistory に積み、ここは「最新スナップショット」を持つ。
+ *
+ * 設計メモ:
+ *   - 1人1行。履歴は qualificationHistories / certificateIssueHistories 等の関連で参照する。
+ *   - Laravel の複数形推測では insured_people になるため、$table を明示している。
  */
 #[Fillable([
     'municipality_code',

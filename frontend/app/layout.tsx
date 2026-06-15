@@ -1,3 +1,18 @@
+/**
+ * Next.js ルートレイアウト (RootLayout)。
+ *
+ * このファイルは何か:
+ *   アプリ全体の HTML シェル。フォント読み込み・globals.css・metadata を定義する
+ *   最上位 layout.tsx。
+ *
+ * どう使われるか:
+ *   - 全ページ (/ および /qualification/**) の共通 `<html>` / `<body>` を提供する。
+ *   - 被保険者資格エリア専用のサイドバー等は qualification/layout.tsx 側で追加する。
+ *
+ * 設計メモ:
+ *   - Geist フォントを CSS 変数経由で Tailwind に渡す。
+ *   - metadata はブラウザタブタイトル・SEO 用 (PoC では最小限)。
+ */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";

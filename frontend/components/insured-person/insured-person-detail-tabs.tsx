@@ -1,5 +1,21 @@
 "use client";
 
+/**
+ * 被保険者詳細 タブ UI (Client Component)。
+ *
+ * このファイルは何か:
+ *   被保険者詳細 (SCR-03) のタブ切り替え。基本情報・資格履歴・証発行履歴・
+ *   再交付申請の 4 パネルを Client 側 state で表示切替する。
+ *
+ * どう使われるか:
+ *   - insured-persons/[id]/page.tsx (RSC) が API 取得結果を props で渡す。
+ *   - 再交付タブの「再交付申請」ボタンは未実装画面へのリンク (プレースホルダー)。
+ *
+ * 設計メモ:
+ *   - データ取得は RSC に任せ、本コンポーネントは表示切替のみ担当する。
+ *   - role="tablist" / tabpanel でアクセシビリティ属性を付与する。
+ */
+
 import Link from "next/link";
 import { useState } from "react";
 import { ClipboardList, FilePenLine, IdCard, User } from "lucide-react";
@@ -54,6 +70,7 @@ export function InsuredPersonDetailTabs({
 
   return (
     <div>
+      {/* ---- タブヘッダー ---- */}
       <div
         className="mb-4 flex gap-1 border-b border-border/60"
         role="tablist"
@@ -84,12 +101,14 @@ export function InsuredPersonDetailTabs({
         })}
       </div>
 
+      {/* ---- タブパネル: 基本情報 ---- */}
       {activeTab === "basic" && (
         <div role="tabpanel">
           <InsuredPersonBasicInfoCard info={basicInfo} />
         </div>
       )}
 
+      {/* ---- タブパネル: 資格履歴 ---- */}
       {activeTab === "qualification" && (
         <div role="tabpanel">
           <Card className="overflow-hidden border-border/60 shadow-sm">
@@ -111,6 +130,7 @@ export function InsuredPersonDetailTabs({
           </Card>
         </div>
       )}
+      {/* ---- タブパネル: 証発行履歴 ---- */}
       {activeTab === "certificate" && (
         <div role="tabpanel">
           <Card className="overflow-hidden border-border/60 shadow-sm">
@@ -135,6 +155,7 @@ export function InsuredPersonDetailTabs({
         </div>
       )}
 
+      {/* ---- タブパネル: 再交付申請 ---- */}
       {activeTab === "reissue" && (
         <div role="tabpanel">
           <Card className="overflow-hidden border-border/60 shadow-sm">

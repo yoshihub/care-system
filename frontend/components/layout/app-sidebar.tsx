@@ -1,5 +1,23 @@
 "use client";
 
+/**
+ * 被保険者資格エリアの左サイドバー (AppSidebar)。
+ *
+ * このファイルは何か:
+ *   /qualification/** 配下の業務メニューを表示する折りたたみ可能な
+ *   左ナビゲーション。被保険者一覧・住民異動一覧などへのリンクを提供する。
+ *
+ * どう使われるか:
+ *   - qualification/layout.tsx から読み込まれ、全被保険者資格画面の左端に固定表示。
+ *   - 三本線ボタンでラベル表示/非表示をトグルできる (アイコンのみモード)。
+ *   - フッターから大分類トップ (/) へ戻れる。
+ *
+ * 設計メモ:
+ *   - メニュー項目は nav-items.ts の QUALIFICATION_NAV_ITEMS から生成する。
+ *   - pathname 一致でアクティブ状態をハイライト (子パスも含む startsWith 判定)。
+ *   - Client Component 必須 (usePathname / useState による UI 状態)。
+ */
+
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -31,7 +49,7 @@ const navLinkClass = (active: boolean) =>
       : "text-sidebar-muted hover:bg-sidebar-accent hover:text-white"
   );
 
-/** 被保険者資格エリアの左サイドバー。三本線でラベル表示をトグル。 */
+/** サイドバー本体: ダッシュボードリンク + 業務メニュー + 大分類トップへ戻る */
 export function AppSidebar() {
   const pathname = usePathname();
   const isDashboard = pathname === QUALIFICATION_DASHBOARD_HREF;

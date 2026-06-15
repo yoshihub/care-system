@@ -1,6 +1,20 @@
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
+/**
+ * 被保険者 資格状態バッジ (Server Component)。
+ *
+ * このファイルは何か:
+ *   insured_persons.status (active / lost) を日本語ラベルと色付き Badge で表示する
+ *   プレゼンテーションコンポーネント。
+ *
+ * どう使われるか:
+ *   - 被保険者一覧テーブル、基本情報 Card、資格登録結果画面などで共用する。
+ *
+ * 設計メモ:
+ *   - 未知の status 値はそのまま文字列表示 (フォールバックスタイル)。
+ */
+
 const STATUS_LABELS: Record<string, string> = {
   active: "有効",
   lost: "喪失",

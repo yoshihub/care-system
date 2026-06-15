@@ -7,7 +7,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * 被保険者詳細用のJSON表現。
+ * 被保険者詳細 API レスポンス整形 (InsuredPersonDetailResource)。
+ *
+ * このファイルは何か:
+ *   1被保険者の基本情報と、関連する資格履歴・証発行履歴・再交付申請を
+ *   ネストした JSON に変換する Laravel API Resource。
+ *
+ * どう使われるか:
+ *   - GET /api/insured-persons/{id} の show レスポンスとして利用される。
+ *   - フロントの被保険者詳細画面 (タブ構成) が各セクションを描画する。
+ *
+ * 設計メモ:
+ *   - basic_info に被保険者本体をまとめ、履歴系は専用 Resource で配列化する。
+ *   - 一覧 API より項目が多いため、InsuredPersonResource とは用途を分離している。
  *
  * @mixin InsuredPerson
  */
@@ -19,6 +31,7 @@ class InsuredPersonDetailResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            // 被保険者本体の現在状態 (一覧 Resource より詳細な項目を含む)
             'basic_info' => [
                 'id' => $this->id,
                 'municipality_code' => $this->municipality_code,
@@ -46,6 +59,7 @@ class InsuredPersonDetailResource extends JsonResource
                 'created_at' => $this->created_at?->toIso8601String(),
                 'updated_at' => $this->updated_at?->toIso8601String(),
             ],
+            // Controller で eager load 済みの関連履歴 (未 load 時はキーごと省略)
             'qualification_histories' => QualificationHistoryResource::collection(
                 $this->whenLoaded('qualificationHistories')
             ),

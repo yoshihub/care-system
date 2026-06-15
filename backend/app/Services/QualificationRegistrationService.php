@@ -9,10 +9,24 @@ use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 /**
- * 住民異動イベントをもとに資格登録を行う。
+ * 資格登録の業務ロジック。
  *
- * 被保険者の作成/更新、資格履歴の追加、イベントの処理済み更新までを
- * 1トランザクションで実行する。
+ * このファイルは何か:
+ *   住民異動イベント (resident_change_events) を起点に、被保険者 (insured_persons) の
+ *   作成・更新と資格履歴 (qualification_histories) の追加を行う中核サービス。
+ *   画面や API から渡された入力を検証済みとして受け取り、DB 更新の一連の流れを担う。
+ *
+ * どう使われるか:
+ *   - QualificationHistoryController::store から register() が呼ばれる。
+ *   - 未処理 (pending) のイベントに対してのみ実行できる。
+ *   - 正常終了時はイベントを processed にし、被保険者・資格履歴・イベントをまとめて返す。
+ *
+ * 設計メモ:
+ *   - 全処理を 1 トランザクションにまとめ、途中失敗時はロールバックする。
+ *   - 被保険者番号の採番は InsuredNumberService、イベント状態更新は
+ *     ResidentChangeEventStatusService に委譲する。
+ *   - 異動区分 (ACQUIRE / CHANGE / LOSE / RECOVER / CANCEL) ごとに
+ *     被保険者本体へ反映する項目が異なる。
  */
 class QualificationRegistrationService
 {
@@ -42,6 +56,9 @@ class QualificationRegistrationService
     public function register(array $input): array
     {
         return DB::transaction(function () use ($input) {
+            // ---- 対象イベントの取得と前提チェック --------------------------
+
+            // 同時実行で二重登録されないよう、イベント行をロックして取得する。
             $event = ResidentChangeEvent::query()
                 ->lockForUpdate()
                 ->find($input['source_event_id']);
@@ -54,7 +71,12 @@ class QualificationRegistrationService
                 throw new InvalidArgumentException('未処理の住民異動イベントのみ資格登録できます。');
             }
 
+            // ---- 被保険者の解決と資格履歴の追加 --------------------------
+
+            // 取得 (ACQUIRE) なら新規作成、それ以外は既存被保険者を更新対象とする。
             $person = $this->resolveInsuredPerson($event, $input);
+
+            // 新しい履歴を is_latest=true にする前に、既存の最新フラグを外す。
             $this->clearLatestQualificationHistory($person);
 
             $history = QualificationHistory::create([
@@ -71,7 +93,10 @@ class QualificationRegistrationService
                 'is_latest' => true,
             ]);
 
+            // 被保険者本体の現在状態 (status・資格日など) を履歴内容に合わせて更新する。
             $this->syncInsuredPersonState($person, $event, $input);
+
+            // イベントを処理済みにし、一覧画面で未処理と区別できるようにする。
             $processedEvent = $this->eventStatusService->markAsProcessed($event);
 
             return [
@@ -93,6 +118,7 @@ class QualificationRegistrationService
             ->lockForUpdate()
             ->first();
 
+        // 資格取得: 同一自治体・住民番号の被保険者がいなければ新規作成
         if ($input['change_type'] === 'ACQUIRE') {
             if ($existing !== null) {
                 throw new InvalidArgumentException('同じ住民番号の被保険者が既に登録されています。');
@@ -101,10 +127,12 @@ class QualificationRegistrationService
             return InsuredPerson::create($this->buildNewInsuredPersonAttributes($event, $input));
         }
 
+        // 変更・喪失など: 既存被保険者が必須
         if ($existing === null) {
             throw new InvalidArgumentException('資格変更・喪失の対象となる被保険者が見つかりません。');
         }
 
+        // 住所変更・氏名変更: イベントのスナップショットを被保険者本体へ反映
         if ($input['change_type'] === 'CHANGE') {
             $existing->fill($this->buildChangedAttributesFromEvent($event));
             $existing->save();
@@ -175,6 +203,7 @@ class QualificationRegistrationService
     ): void {
         $person->latest_qualification_date = $input['qualification_date'];
 
+        // 区分ごとに被保険者の資格状態 (status) と開始日・終了日を切り替える
         if ($input['change_type'] === 'ACQUIRE') {
             $person->status = 'active';
             $person->qualification_start_date = $input['qualification_start_date'];

@@ -5,6 +5,22 @@ import { InsuredStatusBadge } from "@/components/insured-person/insured-status-b
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+/**
+ * 被保険者基本情報 Card (Server Component)。
+ *
+ * このファイルは何か:
+ *   被保険者詳細の「基本情報」タブ内容。氏名・住所・資格状態などを
+ *   定義リスト (dl) 形式で表示する。InsuredPersonBasicInfo 型もここで export する。
+ *
+ * どう使われるか:
+ *   - insured-person-detail-tabs の basic パネルから info prop を受け取る。
+ *   - page.tsx の API 型定義でも InsuredPersonBasicInfo を import する。
+ *
+ * 設計メモ:
+ *   - 性別・被保険者区分・証状態はコード値をラベルマップで日本語化する。
+ *   - 住所は郵便番号〜建物名を連結して 1 行表示する。
+ */
+
 export type InsuredPersonBasicInfo = {
   id: number;
   municipality_code: string;
@@ -56,6 +72,7 @@ export function InsuredPersonBasicInfoCard({
 }: InsuredPersonBasicInfoCardProps) {
   const address = formatAddress(info);
 
+  // 表示項目の定義 (ラベル + 値)。Badge 等の ReactNode も含む。
   const items: { label: string; value: ReactNode }[] = [
     { label: "被保険者番号", value: info.insured_no },
     { label: "住民番号", value: info.resident_no },
