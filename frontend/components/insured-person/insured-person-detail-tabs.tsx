@@ -141,9 +141,18 @@ export function InsuredPersonDetailTabs({
                 <span className="ml-6 text-sm text-muted-foreground">
                   被保険者証などの発行履歴を確認します
                 </span>
-                <span className="ml-auto shrink-0 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tabular-nums text-primary">
-                  {certificateIssueHistories.length} 件
-                </span>
+                <div className="ml-auto flex shrink-0 items-center gap-2">
+                  <Button asChild size="sm" variant="outline">
+                    <Link
+                      href={`/qualification/insured-persons/${insuredPersonId}/certificate-preview`}
+                    >
+                      被保険者証プレビュー
+                    </Link>
+                  </Button>
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold tabular-nums text-primary">
+                    {certificateIssueHistories.length} 件
+                  </span>
+                </div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
